@@ -1,12 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using cesapp.Context;
+using cesapp.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace cesapp.Controllers
 {
 	public class UserController : Controller
 	{
-		public IActionResult Index()
+		public readonly ApplicationDbContext _context;
+        public UserController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        public IActionResult Index()
 		{
-			return View();
+			IEnumerable<User> users = _context.Users.Include(r => r.Role);
+			return View(users);
 		}
 	}
 }

@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 // Add Sessions
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
-    options.IdleTimeout = TimeSpan.FromMinutes(1)
+    options.IdleTimeout = TimeSpan.FromMinutes(10)
 );
 // Add database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
