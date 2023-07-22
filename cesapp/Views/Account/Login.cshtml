@@ -1,0 +1,32 @@
+﻿@model UserLogin
+@{
+	ViewData["Title"] = "Login";
+	Layout = "~/Views/Shared/_LogLayout.cshtml";
+}
+<section>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 col-sm-8 col-md-6 m-auto">
+				<div class="card p-2">
+					<img src="~/images/lpee-png.png" class="card-img-top mx-auto w-50" />
+					<div class="card-body">
+						<form method="post" asp-controller="Account" asp-action="Login">
+							@Html.AntiForgeryToken()
+							<div class="mb-2">
+								<span class="text-danger small" asp-validation-for="Email"></span>
+								<input class="form-control" asp-for="Email" placeholder="Email" />
+							</div>						
+							<div class="mb-2">
+								<span class="text-danger small" asp-validation-for="PasswordHash"></span>
+								<input class="form-control" asp-for="PasswordHash" placeholder="Mot de passe"/>
+							</div>
+							<div class="text-center">
+								<button type="submit" class="btn btn-warning">Se connecter</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

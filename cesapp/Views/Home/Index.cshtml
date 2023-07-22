@@ -1,0 +1,15 @@
+﻿@using cesapp.Services;
+@inject ISessionsHandler sessionHandler
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <a asp-controller="Account" asp-action="Logout" class="btn btn-sm btn-danger">Logout</a>
+    @if (sessionHandler.getUserSession("connectedUser") != null)
+    {
+        <h2>@sessionHandler.getUserSession("connectedUser").LastName</h2>
+    }
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
