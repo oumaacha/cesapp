@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using cesapp.Services
+@inject ISessionsHandler sessionsHandler
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -33,7 +35,7 @@
                             </a>
                         </li>
                         <li>
-                            <a asp-controller="User" asp-actio="Index" class="nav-link px-0 align-middle text-white">
+                            <a asp-controller="User" asp-action="Index" class="nav-link px-0 align-middle text-white">
                                 <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Utilisateurs</span>
                             </a>
                         </li>
@@ -41,7 +43,9 @@
                     <hr>
                     <div class="dropdown pb-4">
                         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="d-none d-sm-inline mx-1">loser</span>
+                            <span class="d-none d-sm-inline mx-1">
+                                @sessionsHandler.getUserSession("connectedUser").LastName
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
                             <li><a class="dropdown-item" href="#">New project...</a></li>
@@ -50,7 +54,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">Sign out</a></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Sign out</a></li>
                         </ul>
                     </div>
                 </div>

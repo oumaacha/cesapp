@@ -28,13 +28,29 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+app.UseSession();
+
 app.UseStaticFiles();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 app.UseRouting();
 
-app.UseSession();
+app.Use(async (context, next) =>
+{
+    var connectedUser = context.Session.GetString("connectedUser");
+    var requestPath = context.Request.Path;
+
+
+    if (string.IsNullOrEmpty(connectedUser) && requestPath != "/Account/Login")
+    {
+        context.Response.Redirect("/Account/Login");
+        return;
+    }
+
+    await next();
+});
 
 app.UseAuthorization();
 

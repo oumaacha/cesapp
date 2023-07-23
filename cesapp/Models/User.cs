@@ -6,14 +6,27 @@ namespace cesapp.Models
 	{
 		[Key]
 		public int UserId { get; set; }
+
+		[Required(ErrorMessage = "Ce champe est requis")]
+        [MaxLength(100,ErrorMessage = "Le nombre de caractères ne doit pas dépasser 100")]
 		public string FirstName { get; set; }
-		public string LastName { get; set; }
-		public string Email { get; set; }
-		public string PasswordHash { get; set; }
+
+        [Required(ErrorMessage = "Ce champe est requis")]
+        [MaxLength(100, ErrorMessage = "Le nombre de caractères ne doit pas dépasser 100")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "Ce champe est requis")]
+        [MaxLength(100, ErrorMessage = "Le nombre de caractères ne doit pas dépasser 100")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Ce champe est requis")]
+        public string PasswordHash { get; set; }
+
 		public bool IsEmailConfirmed { get; set; } = false;
 		public DateTime Created { get; set; }
 		public DateTime? LastConnection { get; set; } = null;
-		public int RoleId { get; set; }
+        [Required(ErrorMessage = "Ce champe est requis")]
+        public int RoleId { get; set; }
 		public Role Role { get; set; }
         public User()
         {

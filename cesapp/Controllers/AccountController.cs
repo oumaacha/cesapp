@@ -26,6 +26,8 @@ namespace cesapp.Controllers
                 var userFromDb = _context.Users.FirstOrDefault(u => u.Email == userLogin.Email);
                 if (userFromDb != null && _context.Users.FirstOrDefault(u => u.PasswordHash == userLogin.PasswordHash) != null)
                 {
+                    userFromDb.LastConnection = DateTime.UtcNow;
+                    _context.SaveChanges();
                     _sessionsHandler.setUserSession("connectedUser",userFromDb);
 					return RedirectToAction("Index","Home");
                 }

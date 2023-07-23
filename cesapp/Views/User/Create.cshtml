@@ -1,0 +1,47 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Nouveau utilisateur";
+    var roles = ViewData["roles"] as IEnumerable<Role>;
+}
+<div class="card">
+    <div class="card-header">
+        <h5 class="text-muted">Ajouter un nouveau utilisateur</h5>
+    </div>
+	<div class="card-body">
+        <form method="post" asp-controller="User" asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label class="form-label">Prénom</label>
+                <span class="text-danger small" asp-validation-for="FirstName"></span>
+                <input asp-for="FirstName" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nom</label>
+                <span class="text-danger small" asp-validation-for="LastName"></span>
+                <input asp-for="LastName" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <span class="text-danger small" asp-validation-for="Email"></span>
+                <input asp-for="Email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                <span class="text-danger small" asp-validation-for="PasswordHash"></span>
+                <input asp-for="PasswordHash" class="form-control">
+            </div>
+            <div>
+                <span class="text-danger small" asp-validation-for="RoleId"></span>
+                <select asp-for="RoleId" class="form-select">
+                    <option selected>Choisir le role de cet utilisateur</option>
+                        @foreach (var role in roles)
+                        {
+                            <option value="@role.RoleId">@role.RoleName</option>
+                        }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
+            <a asp-controller="User" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+	</div>
+</div>
