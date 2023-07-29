@@ -1,0 +1,95 @@
+﻿@model Machine
+@{
+    ViewData["Title"] = "Les machines";
+    var fournisseurs = ViewData["fournisseurs"] as IEnumerable<Fournisseur>;
+    var machinetypes = ViewData["machinetypes"] as IEnumerable<MachineType>;
+    var operateurs = ViewData["operateurs"] as IEnumerable<Operateur>;
+}
+<div class="card">
+    <div class="card-header">
+        <h5 class="text-muted">Ajouter une nouvelle machine</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-controller="Machine" asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label class="form-label">Désignation</label>
+                <span class="text-danger small" asp-validation-for="Designation"></span>
+                <input asp-for="Designation" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Date d'acquisition</label>
+                <span class="text-danger small" asp-validation-for="DateAcquisition"></span>
+                <input type="Date" asp-for="DateAcquisition" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Numero de facteur</label>
+                <span class="text-danger small" asp-validation-for="Nfacteur"></span>
+                <input asp-for="Nfacteur" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fournisseur</label>
+                <span class="text-danger small" asp-validation-for="Fournisseur.FournisseurName"></span>
+                <select asp-for="Fournisseur.FournisseurId" id="fournisseur-select" name="selectedFournisseur">
+                    <option selected>Choisir le fournisseur</option>
+                    @foreach(var founisseur in fournisseurs)
+                    {
+                        <option value="@founisseur.FournisseurId">@founisseur.FournisseurName</option>
+                    }
+                    <option value="autre">Autre</option>
+                </select>
+                <input asp-for="Fournisseur.FournisseurName" class="form-control" id="fournisseur-input">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Type</label>
+                <span class="text-danger small" asp-validation-for="MachineType.MachineTypeName"></span>
+                <select asp-for="MachineType.MachineTypeId" id="machinetype-select" name="selectedMachineType">
+                    <option selected>Choisir le type</option>
+                    @foreach (var machinetype in machinetypes)
+                    {
+                        <option value="@machinetype.MachineTypeId">@machinetype.MachineTypeName</option>
+                    }
+                    <option value="autre">Autre</option>
+                </select>
+                <input asp-for="MachineType.MachineTypeName" class="form-control focud" id="machinetype-input">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">(Operateur) Sondeur</label>
+                <span class="text-danger small" asp-validation-for="Operateur"></span>
+                <select asp-for="Operateur.OperateurId" name="selectedOperateur">
+                    <option selected>Choisir le sondeur</option>
+                    @foreach (var operateur in operateurs)
+                    {
+                        <option value="@operateur.OperateurId">@operateur.OperateurName</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
+            <a asp-controller="User" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+    </div>
+</div>
+<script>
+    const selectfieldfournisseur = document.getElementById("fournisseur-select")
+    const inputfieldfournisseur = document.getElementById("fournisseur-input")
+    const selectfieldmachinetype = document.getElementById("machinetype-select")
+    const inputfieldmachinetype = document.getElementById("machinetype-input")
+    inputfieldfournisseur.style.display = "none"
+    selectfieldfournisseur.addEventListener("change", () => {
+        if (selectfieldfournisseur.value === "autre") {
+            inputfieldfournisseur.style.display = "block";
+        }else{
+            inputfieldfournisseur.style.display = "none";
+            inputfieldfournisseur.value = selectfieldfournisseur.value
+        }
+    })
+    inputfieldmachinetype.style.display = "none"
+    selectfieldmachinetype.addEventListener("change", () => {
+        if (selectfieldmachinetype.value === "autre") {
+            inputfieldmachinetype.style.display = "block";
+        } else {
+            inputfieldmachinetype.style.display = "none";
+            inputfieldmachinetype.value = selectfieldmachinetype.value
+        }
+    })
+</script>

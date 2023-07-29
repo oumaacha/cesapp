@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Machine>
+@{
+	ViewData["Title"] = "Machines";
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="text-muted">Les machines</h5>
+        <a asp-controller="Machine" asp-action="Create" class="btn btn-primary">Ajouter une machine</a>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Désignation</th>
+                    <th scope="col">Numero de facteur</th>
+                    <th scope="col">Date d'acquisition</th>
+                    <th scope="col">Disponibilite</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var machine in Model)
+                {
+                    <tr>
+                        <td>@machine.Designation</td>
+                        <td>@machine.Nfacteur</td>
+                        <td>@machine.DateAcquisition</td>
+                        @if (machine.isAvailable)
+                        {
+                            <td>Disponible</td>
+                        }
+                        else
+                        {
+                            <td>Indisponible</td>
+                        }
+                        <td>
+                            <a asp-controller="Machine" asp-action="Delete" asp-route-id="@machine.MachineId" class="btn btn-sm btn-danger">Supprimer</a>
+                            <a class="btn btn-sm btn-warning">Plus</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -49,7 +49,22 @@ app.Use(async (context, next) =>
         return;
     }
 
-    await next();
+    await next.Invoke();
+});
+app.Use(async (context, next) =>
+{
+    var sessionService = context.RequestServices.GetService<ISessionsHandler>();
+    var user = sessionService.getUserSession("connectedUser");
+    var requestPath = context.Request.Path;
+    if (user != null && user.RoleId == 2)
+    {
+        if (requestPath.StartsWithSegments(new PathString("/User")) || requestPath.StartsWithSegments(new PathString("/Produit")))
+        {
+            context.Response.Redirect("/Error/AccessDenied");
+            return;
+        }
+    }
+    await next.Invoke();
 });
 
 app.UseAuthorization();
