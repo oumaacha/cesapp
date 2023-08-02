@@ -9,22 +9,22 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace cesapp.Migrations
 {
     /// <inheritdoc />
-    public partial class migr : Migration
+    public partial class mig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Emplacements",
+                name: "ChefLieux",
                 columns: table => new
                 {
-                    EmplacementId = table.Column<int>(type: "integer", nullable: false)
+                    LieuId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EmplacementName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
+                    LieuName = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Emplacements", x => x.EmplacementId);
+                    table.PrimaryKey("PK_ChefLieux", x => x.LieuId);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,32 +82,26 @@ namespace cesapp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Chantiers",
+                name: "Prefectures",
                 columns: table => new
                 {
-                    ChantierId = table.Column<int>(type: "integer", nullable: false)
+                    PrefectureId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ChantierName = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    DateDebut = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DateFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Budget = table.Column<double>(type: "double precision", nullable: false),
-                    Progres = table.Column<int>(type: "integer", nullable: false),
-                    EmplacementId = table.Column<int>(type: "integer", nullable: false)
+                    PrefectureName = table.Column<string>(type: "text", nullable: false),
+                    ChefLieuId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chantiers", x => x.ChantierId);
+                    table.PrimaryKey("PK_Prefectures", x => x.PrefectureId);
                     table.ForeignKey(
-                        name: "FK_Chantiers_Emplacements_EmplacementId",
-                        column: x => x.EmplacementId,
-                        principalTable: "Emplacements",
-                        principalColumn: "EmplacementId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Prefectures_ChefLieux_ChefLieuId",
+                        column: x => x.ChefLieuId,
+                        principalTable: "ChefLieux",
+                        principalColumn: "LieuId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Worker",
+                name: "Workers",
                 columns: table => new
                 {
                     WorkerId = table.Column<int>(type: "integer", nullable: false)
@@ -119,9 +113,9 @@ namespace cesapp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Worker", x => x.WorkerId);
+                    table.PrimaryKey("PK_Workers", x => x.WorkerId);
                     table.ForeignKey(
-                        name: "FK_Worker_Operateurs_OperateurId",
+                        name: "FK_Workers_Operateurs_OperateurId",
                         column: x => x.OperateurId,
                         principalTable: "Operateurs",
                         principalColumn: "OperateurId");
@@ -153,6 +147,50 @@ namespace cesapp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Localisations",
+                columns: table => new
+                {
+                    LocalisationId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    X = table.Column<double>(type: "double precision", nullable: false),
+                    Y = table.Column<double>(type: "double precision", nullable: false),
+                    PrefectureId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Localisations", x => x.LocalisationId);
+                    table.ForeignKey(
+                        name: "FK_Localisations_Prefectures_PrefectureId",
+                        column: x => x.PrefectureId,
+                        principalTable: "Prefectures",
+                        principalColumn: "PrefectureId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Chantiers",
+                columns: table => new
+                {
+                    ChantierId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ChantierName = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    DateDebut = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DateFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Budget = table.Column<double>(type: "double precision", nullable: false),
+                    Progres = table.Column<int>(type: "integer", nullable: false),
+                    LocalisationId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chantiers", x => x.ChantierId);
+                    table.ForeignKey(
+                        name: "FK_Chantiers_Localisations_LocalisationId",
+                        column: x => x.LocalisationId,
+                        principalTable: "Localisations",
+                        principalColumn: "LocalisationId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Machines",
                 columns: table => new
                 {
@@ -165,8 +203,7 @@ namespace cesapp.Migrations
                     FournisseurId = table.Column<int>(type: "integer", nullable: false),
                     MachineTypeId = table.Column<int>(type: "integer", nullable: false),
                     OperateurId = table.Column<int>(type: "integer", nullable: false),
-                    ChantierId = table.Column<int>(type: "integer", nullable: true),
-                    EmplacementId = table.Column<int>(type: "integer", nullable: true)
+                    ChantierId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -176,11 +213,6 @@ namespace cesapp.Migrations
                         column: x => x.ChantierId,
                         principalTable: "Chantiers",
                         principalColumn: "ChantierId");
-                    table.ForeignKey(
-                        name: "FK_Machines_Emplacements_EmplacementId",
-                        column: x => x.EmplacementId,
-                        principalTable: "Emplacements",
-                        principalColumn: "EmplacementId");
                     table.ForeignKey(
                         name: "FK_Machines_Fournisseurs_FournisseurId",
                         column: x => x.FournisseurId,
@@ -199,13 +231,22 @@ namespace cesapp.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Emplacements",
-                columns: new[] { "EmplacementId", "EmplacementName" },
+                table: "ChefLieux",
+                columns: new[] { "LieuId", "LieuName" },
                 values: new object[,]
                 {
-                    { 1, "Emplacement A" },
-                    { 2, "Emplacement B" },
-                    { 3, "Emplacement C" }
+                    { 1, "Tanger-Assilah" },
+                    { 2, "Oujda-Angad" },
+                    { 3, "Fès" },
+                    { 4, "Rabat" },
+                    { 5, "Beni Mellal" },
+                    { 6, "Casablanca" },
+                    { 7, "Marrakech" },
+                    { 8, "Errachidia" },
+                    { 9, "Agadir Ida-Outanane" },
+                    { 10, "Guelmim" },
+                    { 11, "Laâyoune" },
+                    { 12, "Dakhla-Oued-Eddahab" }
                 });
 
             migrationBuilder.InsertData(
@@ -249,11 +290,31 @@ namespace cesapp.Migrations
 
             migrationBuilder.InsertData(
                 table: "Machines",
-                columns: new[] { "MachineId", "ChantierId", "DateAcquisition", "Designation", "EmplacementId", "FournisseurId", "MachineTypeId", "Nfacteur", "OperateurId", "isAvailable" },
+                columns: new[] { "MachineId", "ChantierId", "DateAcquisition", "Designation", "FournisseurId", "MachineTypeId", "Nfacteur", "OperateurId", "isAvailable" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8598), "Machine A", null, 1, 1, "15484", 1, true },
-                    { 2, null, new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8600), "Machine B", null, 2, 1, "15484", 2, true }
+                    { 1, null, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8862), "Machine A", 1, 1, "15484", 1, true },
+                    { 2, null, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8865), "Machine B", 2, 1, "15484", 2, true }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Prefectures",
+                columns: new[] { "PrefectureId", "ChefLieuId", "PrefectureName" },
+                values: new object[,]
+                {
+                    { 1, 1, "Tanger-Assilah" },
+                    { 2, 1, "Tétouan" },
+                    { 3, 1, "Larache" },
+                    { 4, 1, "Chefchaouen" },
+                    { 5, 2, "Oujda-Angad" },
+                    { 6, 2, "Driouech" },
+                    { 7, 2, "Berkane" },
+                    { 8, 2, "Guercif" },
+                    { 9, 3, "Fès" },
+                    { 10, 3, "Hajeb" },
+                    { 11, 3, "Moulay Yacoub" },
+                    { 12, 3, "Boulemane" },
+                    { 13, 3, "Taza" }
                 });
 
             migrationBuilder.InsertData(
@@ -261,12 +322,12 @@ namespace cesapp.Migrations
                 columns: new[] { "UserId", "Created", "Email", "FirstName", "IsEmailConfirmed", "LastConnection", "LastName", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8494), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
-                    { 2, new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8498), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
+                    { 1, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8693), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
+                    { 2, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8699), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
                 });
 
             migrationBuilder.InsertData(
-                table: "Worker",
+                table: "Workers",
                 columns: new[] { "WorkerId", "OperateurId", "PhoneNumber", "Type", "WorkerName" },
                 values: new object[,]
                 {
@@ -278,20 +339,21 @@ namespace cesapp.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chantiers_EmplacementId",
+                name: "IX_Chantiers_LocalisationId",
                 table: "Chantiers",
-                column: "EmplacementId",
+                column: "LocalisationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Localisations_PrefectureId",
+                table: "Localisations",
+                column: "PrefectureId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Machines_ChantierId",
                 table: "Machines",
                 column: "ChantierId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Machines_EmplacementId",
-                table: "Machines",
-                column: "EmplacementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Machines_FournisseurId",
@@ -311,13 +373,18 @@ namespace cesapp.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Prefectures_ChefLieuId",
+                table: "Prefectures",
+                column: "ChefLieuId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Worker_OperateurId",
-                table: "Worker",
+                name: "IX_Workers_OperateurId",
+                table: "Workers",
                 column: "OperateurId");
         }
 
@@ -331,7 +398,7 @@ namespace cesapp.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Worker");
+                name: "Workers");
 
             migrationBuilder.DropTable(
                 name: "Chantiers");
@@ -349,7 +416,13 @@ namespace cesapp.Migrations
                 name: "Operateurs");
 
             migrationBuilder.DropTable(
-                name: "Emplacements");
+                name: "Localisations");
+
+            migrationBuilder.DropTable(
+                name: "Prefectures");
+
+            migrationBuilder.DropTable(
+                name: "ChefLieux");
         }
     }
 }

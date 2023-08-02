@@ -35,9 +35,9 @@ namespace cesapp.Context
 				.HasForeignKey(x => x.MachineTypeId)
 				.IsRequired(false);
 			modelBuilder.Entity<Chantier>()
-				.HasOne(x => x.Emplacement)
+				.HasOne(x => x.Localisation)
 				.WithOne()
-				.IsRequired();
+				.IsRequired(false);
 			modelBuilder.Entity<Chantier>()
 				.HasMany(x => x.Machines);
 			modelBuilder.Entity<Operateur>()
@@ -48,6 +48,14 @@ namespace cesapp.Context
 			modelBuilder.Entity<Worker>()
 				.Property(x => x.Type)
 				.HasConversion<string>();
+			modelBuilder.Entity<ChefLieu>()
+				.HasMany(x => x.Prefectures)
+				.WithOne(x => x.ChefLieu)
+				.IsRequired(false);
+			modelBuilder.Entity<Localisation>()
+				.HasOne(x => x.Prefecture)
+				.WithOne()
+				.IsRequired(false);
 			new DbContextInitializer(modelBuilder).Seed();
 		}
 
@@ -56,8 +64,11 @@ namespace cesapp.Context
 		public DbSet<Machine> Machines { get; set; }
 		public DbSet<Operateur> Operateurs { get; set; }
 		public DbSet<Fournisseur> Fournisseurs { get; set; }
-		public DbSet<Emplacement> Emplacements { get; set; }
 		public DbSet<Chantier> Chantiers { get; set; }
 		public DbSet<MachineType> MachineTypes { get; set; }
+		public DbSet<Worker> Workers { get; set; }
+		public DbSet<ChefLieu> ChefLieux { get; set; }
+		public DbSet<Prefecture> Prefectures { get; set; }
+		public DbSet<Localisation> Localisations { get; set; }
     }
 }

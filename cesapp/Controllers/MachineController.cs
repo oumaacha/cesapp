@@ -75,9 +75,9 @@ namespace cesapp.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult Delete(int machineid)
+        public IActionResult Delete(int id)
         {
-            var machine = _context.Machines.SingleOrDefault(m => m.MachineId == machineid);
+            var machine = _context.Machines.SingleOrDefault(m => m.MachineId == id);
             if (machine == null)
             {
                 return Content("machine not found");

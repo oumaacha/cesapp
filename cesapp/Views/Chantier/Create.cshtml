@@ -1,0 +1,114 @@
+﻿@model Chantier
+@{
+    ViewData["Title"] = "Ajouter un chantier";
+    var cheflieux = ViewData["cheflieux"] as IEnumerable<ChefLieu>;
+}
+<div class="card">
+    <div class="card-header">
+        <h5 class="text-muted">Ajouter un nouveau chantier</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-controller="Chantier" asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label class="form-label">Nom du chantier</label>
+                <span class="text-danger small" asp-validation-for="ChantierName"></span>
+                <input asp-for="ChantierName" class="form-control">
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Date de debut</label>
+                    <span class="text-danger small" asp-validation-for="DateDebut"></span>
+                    <input type="Date" asp-for="DateDebut" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Date de fin</label>
+                    <span class="text-danger small" asp-validation-for="DateFin"></span>
+                    <input asp-for="DateFin" class="form-control">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <span class="text-danger small" asp-validation-for="Description"></span>
+                <textarea asp-for="Description" class="form-control"></textarea>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label">Budget</label>
+                    <span class="text-danger small" asp-validation-for="Budget"></span>
+                    <input asp-for="Budget" class="form-control">
+                </div>
+                <div class="col mb-3">
+                    <label class="form-label">Progres</label>
+                    <span class="text-danger small" asp-validation-for="Progres"></span>
+                    <span id="progesvalue" class="badge rounded-pill bg-warning text-black"></span>
+                    <input type="range" asp-for="Progres" min="0" max="100" value="0" step="1" class="form-range" id="progresrange">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label">Chef-lieu</label>
+                    <span class="text-danger small" asp-validation-for="Localisation.Prefecture.ChefLieu.LieuName"></span>
+                    <select asp-for="Localisation.Prefecture.ChefLieu.LieuName" id="selectedlieu">
+                        <option selected>Choisir le lieu</option>
+                        @foreach (var cheflieu in cheflieux)
+                        {
+                            <option value="@cheflieu.LieuId">@cheflieu.LieuName</option>
+                        }
+                    </select>
+                </div>
+                <div class="col mb-3">
+                    <label class="form-label">Prefecture</label>
+                    <span class="text-danger small" asp-validation-for="Localisation.Prefecture.PrefectureName"></span><br />
+                    <select asp-for="Localisation.Prefecture.PrefectureName" id="selectedperfecture">
+                        <option>Choisir une prefecture</option>
+                    </select>
+                </div>
+                <div class="col mb-3">
+                    <label class="form-label">Latitude X</label>
+                    <span class="text-danger small" asp-validation-for="Localisation.X"></span>
+                    <input asp-for="Localisation.X" class="form-control form-control-sm">
+                </div>
+                <div class="col mb-3">
+                    <label class="form-label">Longitude Y</label>
+                    <span class="text-danger small" asp-validation-for="Localisation.Y"></span>
+                    <input asp-for="Localisation.Y" class="form-control form-control-sm">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
+            <a asp-controller="Chantier" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+    </div>
+</div>
+<script>
+    var rangevalue = document.getElementById("progresrange")
+    var progresvalue = document.getElementById("progesvalue")
+    window.addEventListener("load",()=>{
+        progresvalue.innerHTML = 0 + "%"
+    })
+    rangevalue.addEventListener("mousemove",()=>{
+        progresvalue.innerHTML = rangevalue.value+"%"
+    })
+
+    const selectedPerfecture = document.getElementById("selectedperfecture")
+    const selectedlieu = document.getElementById("selectedlieu")
+    selectedlieu.addEventListener("change", () => {
+        var lieuName = selectedlieu.value
+        getPerfectures(lieuName)
+    })
+    function getPerfectures(cheflieu) {
+        let url = `/Chantier/ChefLieur/${cheflieu}`
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                selectedPerfecture.innerHTML = "<option>Choisir une prefecture</option>"
+                data.forEach(option => {
+                    var optionElement = document.createElement("option")
+                    optionElement.value = option.prefectureId
+                    optionElement.textContent = option.prefectureName
+                    selectedPerfecture.appendChild(optionElement)
+                })
+            })
+            .catch(error => console.error("Error fetching data:", error));
+    }
+</script>

@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Chantier>
+@{
+	ViewData["Title"] = "Chantiers";
+}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="text-muted">Les machines</h5>
+        <a asp-controller="Chantier" asp-action="Create" class="btn btn-primary">Ajouter un chantier</a>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nom du chantier</th>
+                    <th scope="col">Emplacement</th>
+                    <th scope="col">Date debut</th>
+                    <th scope="col">Date fin</th>
+                    <th scope="col">Budget</th>
+                    <th scope="col">Proges</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var chantier in Model)
+                {
+                    <tr>
+                        <td>@chantier.ChantierName</td>
+                        <td>@chantier.Localisation.Prefecture.PrefectureName</td>
+                        <td>@chantier.DateDebut</td>
+                        <td>@chantier.DateFin</td>
+                        <td>@chantier.Budget</td>
+                        <td>@chantier.Progres</td>
+                        <td>
+                            <a asp-controller="Chantier" asp-action="Delete" asp-route-id="@chantier.ChantierId" class="btn btn-sm btn-danger">Supprimer</a>
+                            <a class="btn btn-sm btn-warning">Plus</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -12,8 +12,8 @@ using cesapp.Context;
 namespace cesapp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230729143627_migr")]
-    partial class migr
+    [Migration("20230801152246_mig")]
+    partial class mig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace cesapp.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int>("EmplacementId")
+                    b.Property<int>("LocalisationId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Progres")
@@ -57,44 +57,88 @@ namespace cesapp.Migrations
 
                     b.HasKey("ChantierId");
 
-                    b.HasIndex("EmplacementId")
+                    b.HasIndex("LocalisationId")
                         .IsUnique();
 
                     b.ToTable("Chantiers");
                 });
 
-            modelBuilder.Entity("cesapp.Models.Emplacement", b =>
+            modelBuilder.Entity("cesapp.Models.ChefLieu", b =>
                 {
-                    b.Property<int>("EmplacementId")
+                    b.Property<int>("LieuId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmplacementId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LieuId"));
 
-                    b.Property<string>("EmplacementName")
+                    b.Property<string>("LieuName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                        .HasColumnType("text");
 
-                    b.HasKey("EmplacementId");
+                    b.HasKey("LieuId");
 
-                    b.ToTable("Emplacements");
+                    b.ToTable("ChefLieux");
 
                     b.HasData(
                         new
                         {
-                            EmplacementId = 1,
-                            EmplacementName = "Emplacement A"
+                            LieuId = 1,
+                            LieuName = "Tanger-Assilah"
                         },
                         new
                         {
-                            EmplacementId = 2,
-                            EmplacementName = "Emplacement B"
+                            LieuId = 2,
+                            LieuName = "Oujda-Angad"
                         },
                         new
                         {
-                            EmplacementId = 3,
-                            EmplacementName = "Emplacement C"
+                            LieuId = 3,
+                            LieuName = "Fès"
+                        },
+                        new
+                        {
+                            LieuId = 4,
+                            LieuName = "Rabat"
+                        },
+                        new
+                        {
+                            LieuId = 5,
+                            LieuName = "Beni Mellal"
+                        },
+                        new
+                        {
+                            LieuId = 6,
+                            LieuName = "Casablanca"
+                        },
+                        new
+                        {
+                            LieuId = 7,
+                            LieuName = "Marrakech"
+                        },
+                        new
+                        {
+                            LieuId = 8,
+                            LieuName = "Errachidia"
+                        },
+                        new
+                        {
+                            LieuId = 9,
+                            LieuName = "Agadir Ida-Outanane"
+                        },
+                        new
+                        {
+                            LieuId = 10,
+                            LieuName = "Guelmim"
+                        },
+                        new
+                        {
+                            LieuId = 11,
+                            LieuName = "Laâyoune"
+                        },
+                        new
+                        {
+                            LieuId = 12,
+                            LieuName = "Dakhla-Oued-Eddahab"
                         });
                 });
 
@@ -127,6 +171,31 @@ namespace cesapp.Migrations
                         });
                 });
 
+            modelBuilder.Entity("cesapp.Models.Localisation", b =>
+                {
+                    b.Property<int>("LocalisationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LocalisationId"));
+
+                    b.Property<int>("PrefectureId")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("X")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Y")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("LocalisationId");
+
+                    b.HasIndex("PrefectureId")
+                        .IsUnique();
+
+                    b.ToTable("Localisations");
+                });
+
             modelBuilder.Entity("cesapp.Models.Machine", b =>
                 {
                     b.Property<int>("MachineId")
@@ -144,9 +213,6 @@ namespace cesapp.Migrations
                     b.Property<string>("Designation")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("EmplacementId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("FournisseurId")
                         .HasColumnType("integer");
@@ -168,8 +234,6 @@ namespace cesapp.Migrations
 
                     b.HasIndex("ChantierId");
 
-                    b.HasIndex("EmplacementId");
-
                     b.HasIndex("FournisseurId")
                         .IsUnique();
 
@@ -184,7 +248,7 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 1,
-                            DateAcquisition = new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8598),
+                            DateAcquisition = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8862),
                             Designation = "Machine A",
                             FournisseurId = 1,
                             MachineTypeId = 1,
@@ -195,7 +259,7 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 2,
-                            DateAcquisition = new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8600),
+                            DateAcquisition = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8865),
                             Designation = "Machine B",
                             FournisseurId = 2,
                             MachineTypeId = 1,
@@ -291,6 +355,108 @@ namespace cesapp.Migrations
                         });
                 });
 
+            modelBuilder.Entity("cesapp.Models.Prefecture", b =>
+                {
+                    b.Property<int>("PrefectureId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PrefectureId"));
+
+                    b.Property<int>("ChefLieuId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PrefectureName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("PrefectureId");
+
+                    b.HasIndex("ChefLieuId");
+
+                    b.ToTable("Prefectures");
+
+                    b.HasData(
+                        new
+                        {
+                            PrefectureId = 1,
+                            ChefLieuId = 1,
+                            PrefectureName = "Tanger-Assilah"
+                        },
+                        new
+                        {
+                            PrefectureId = 2,
+                            ChefLieuId = 1,
+                            PrefectureName = "Tétouan"
+                        },
+                        new
+                        {
+                            PrefectureId = 3,
+                            ChefLieuId = 1,
+                            PrefectureName = "Larache"
+                        },
+                        new
+                        {
+                            PrefectureId = 4,
+                            ChefLieuId = 1,
+                            PrefectureName = "Chefchaouen"
+                        },
+                        new
+                        {
+                            PrefectureId = 5,
+                            ChefLieuId = 2,
+                            PrefectureName = "Oujda-Angad"
+                        },
+                        new
+                        {
+                            PrefectureId = 6,
+                            ChefLieuId = 2,
+                            PrefectureName = "Driouech"
+                        },
+                        new
+                        {
+                            PrefectureId = 7,
+                            ChefLieuId = 2,
+                            PrefectureName = "Berkane"
+                        },
+                        new
+                        {
+                            PrefectureId = 8,
+                            ChefLieuId = 2,
+                            PrefectureName = "Guercif"
+                        },
+                        new
+                        {
+                            PrefectureId = 9,
+                            ChefLieuId = 3,
+                            PrefectureName = "Fès"
+                        },
+                        new
+                        {
+                            PrefectureId = 10,
+                            ChefLieuId = 3,
+                            PrefectureName = "Hajeb"
+                        },
+                        new
+                        {
+                            PrefectureId = 11,
+                            ChefLieuId = 3,
+                            PrefectureName = "Moulay Yacoub"
+                        },
+                        new
+                        {
+                            PrefectureId = 12,
+                            ChefLieuId = 3,
+                            PrefectureName = "Boulemane"
+                        },
+                        new
+                        {
+                            PrefectureId = 13,
+                            ChefLieuId = 3,
+                            PrefectureName = "Taza"
+                        });
+                });
+
             modelBuilder.Entity("cesapp.Models.Role", b =>
                 {
                     b.Property<int>("RoleId")
@@ -368,7 +534,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 1,
-                            Created = new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8494),
+                            Created = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8693),
                             Email = "oumaachaanouar@gmail.com",
                             FirstName = "Anouar",
                             IsEmailConfirmed = false,
@@ -379,7 +545,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 2,
-                            Created = new DateTime(2023, 7, 29, 14, 36, 27, 455, DateTimeKind.Utc).AddTicks(8498),
+                            Created = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8699),
                             Email = "naimkawtar@gmail.com",
                             FirstName = "Kawtar",
                             IsEmailConfirmed = false,
@@ -415,7 +581,7 @@ namespace cesapp.Migrations
 
                     b.HasIndex("OperateurId");
 
-                    b.ToTable("Worker");
+                    b.ToTable("Workers");
 
                     b.HasData(
                         new
@@ -462,13 +628,20 @@ namespace cesapp.Migrations
 
             modelBuilder.Entity("cesapp.Models.Chantier", b =>
                 {
-                    b.HasOne("cesapp.Models.Emplacement", "Emplacement")
+                    b.HasOne("cesapp.Models.Localisation", "Localisation")
                         .WithOne()
-                        .HasForeignKey("cesapp.Models.Chantier", "EmplacementId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("cesapp.Models.Chantier", "LocalisationId");
 
-                    b.Navigation("Emplacement");
+                    b.Navigation("Localisation");
+                });
+
+            modelBuilder.Entity("cesapp.Models.Localisation", b =>
+                {
+                    b.HasOne("cesapp.Models.Prefecture", "Prefecture")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Localisation", "PrefectureId");
+
+                    b.Navigation("Prefecture");
                 });
 
             modelBuilder.Entity("cesapp.Models.Machine", b =>
@@ -476,10 +649,6 @@ namespace cesapp.Migrations
                     b.HasOne("cesapp.Models.Chantier", null)
                         .WithMany("Machines")
                         .HasForeignKey("ChantierId");
-
-                    b.HasOne("cesapp.Models.Emplacement", null)
-                        .WithMany("Machines")
-                        .HasForeignKey("EmplacementId");
 
                     b.HasOne("cesapp.Models.Fournisseur", "Fournisseur")
                         .WithOne()
@@ -498,6 +667,15 @@ namespace cesapp.Migrations
                     b.Navigation("MachineType");
 
                     b.Navigation("Operateur");
+                });
+
+            modelBuilder.Entity("cesapp.Models.Prefecture", b =>
+                {
+                    b.HasOne("cesapp.Models.ChefLieu", "ChefLieu")
+                        .WithMany("Prefectures")
+                        .HasForeignKey("ChefLieuId");
+
+                    b.Navigation("ChefLieu");
                 });
 
             modelBuilder.Entity("cesapp.Models.User", b =>
@@ -523,9 +701,9 @@ namespace cesapp.Migrations
                     b.Navigation("Machines");
                 });
 
-            modelBuilder.Entity("cesapp.Models.Emplacement", b =>
+            modelBuilder.Entity("cesapp.Models.ChefLieu", b =>
                 {
-                    b.Navigation("Machines");
+                    b.Navigation("Prefectures");
                 });
 
             modelBuilder.Entity("cesapp.Models.MachineType", b =>

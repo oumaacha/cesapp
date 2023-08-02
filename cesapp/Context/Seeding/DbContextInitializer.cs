@@ -98,23 +98,6 @@ namespace cesapp.Context.Seeding
                     MachineTypeName = "Enregistreur de paramètres de forage"
                 }
                 );
-            _modelBuilder.Entity<Emplacement>().HasData(
-                new Emplacement()
-                {
-                    EmplacementId = 1,
-                    EmplacementName = "Emplacement A",
-                },
-                new Emplacement()
-                {
-                    EmplacementId = 2,
-                    EmplacementName = "Emplacement B",
-                },
-                new Emplacement()
-                {
-                    EmplacementId = 3,
-                    EmplacementName = "Emplacement C",
-                }
-                );
             _modelBuilder.Entity<Worker>().HasData(
                 new Worker()
                 {
@@ -177,6 +160,148 @@ namespace cesapp.Context.Seeding
                     FournisseurId = 2,
                     MachineTypeId = 1,
                     OperateurId = 2,
+                }
+                );
+            _modelBuilder.Entity<ChefLieu>().HasData(
+                new ChefLieu()
+                {
+                    LieuId = 1,
+                    LieuName = "Tanger-Assilah"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 2,
+                    LieuName = "Oujda-Angad"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 3,
+                    LieuName = "Fès"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 4,
+                    LieuName = "Rabat"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 5,
+                    LieuName = "Beni Mellal"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 6,
+                    LieuName = "Casablanca"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 7,
+                    LieuName = "Marrakech"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 8,
+                    LieuName = "Errachidia"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 9,
+                    LieuName = "Agadir Ida-Outanane"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 10,
+                    LieuName = "Guelmim"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 11,
+                    LieuName = "Laâyoune"
+                },
+                new ChefLieu()
+                {
+                    LieuId = 12,
+                    LieuName = "Dakhla-Oued-Eddahab"
+                }
+                );
+            _modelBuilder.Entity<Prefecture>().HasData(
+                new Prefecture()
+                {
+                    PrefectureId = 1,
+                    PrefectureName = "Tanger-Assilah",
+                    ChefLieuId = 1
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 2,
+                    PrefectureName = "Tétouan",
+                    ChefLieuId = 1
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 3,
+                    PrefectureName = "Larache",
+                    ChefLieuId = 1
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 4,
+                    PrefectureName = "Chefchaouen", /**/
+                    ChefLieuId = 1
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 5,
+                    PrefectureName = "Oujda-Angad",
+                    ChefLieuId = 2
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 6,
+                    PrefectureName = "Driouech",
+                    ChefLieuId = 2
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 7,
+                    PrefectureName = "Berkane",
+                    ChefLieuId = 2
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 8,
+                    PrefectureName = "Guercif", /**/
+                    ChefLieuId = 2
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 9,
+                    PrefectureName = "Fès",
+                    ChefLieuId = 3
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 10,
+                    PrefectureName = "Hajeb",
+                    ChefLieuId = 3
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 11,
+                    PrefectureName = "Moulay Yacoub",
+                    ChefLieuId = 3
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 12,
+                    PrefectureName = "Boulemane",
+                    ChefLieuId = 3
+                },
+                new Prefecture()
+                {
+                    PrefectureId = 13,
+                    PrefectureName = "Taza", /**/
+                    ChefLieuId = 3
                 }
                 );
         }
