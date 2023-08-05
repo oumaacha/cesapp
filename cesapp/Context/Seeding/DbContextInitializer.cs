@@ -140,7 +140,39 @@ namespace cesapp.Context.Seeding
                     OperateurId = 2
                 }
                 );
-            _modelBuilder.Entity<Machine>().HasData(
+            _modelBuilder.Entity<Localisation>().HasData(
+                new Localisation() { 
+                    LocalisationId = 1,
+                    PrefectureId = 2,
+                    X = 24,
+                    Y = 45
+                }
+                );
+			_modelBuilder.Entity<Chantier>().HasData(
+				new Chantier()
+				{
+					ChantierId = 1,
+					Budget = 40000,
+					ChantierName = "XP Boskoura AR472",
+					DateDebut = DateTime.UtcNow,
+					DateFin = DateTime.UtcNow.AddDays(10),
+					Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
+					LocalisationId = 1,
+					Progres = 55
+				},
+				new Chantier()
+				{
+					ChantierId = 2,
+					Budget = 60000,
+					ChantierName = "XP Boskoura AR472",
+					DateDebut = DateTime.UtcNow,
+					DateFin = DateTime.UtcNow.AddDays(20),
+					Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
+					LocalisationId = 1,
+					Progres = 0
+				}
+				);
+			_modelBuilder.Entity<Machine>().HasData(
                 new Machine()
                 {
                     MachineId = 1,
@@ -149,7 +181,7 @@ namespace cesapp.Context.Seeding
                     DateAcquisition = DateTime.UtcNow,
                     FournisseurId = 1,
                     MachineTypeId = 1,
-                    OperateurId = 1,
+                    OperateurId = 1
                 },
                 new Machine()
                 {
@@ -159,7 +191,7 @@ namespace cesapp.Context.Seeding
                     DateAcquisition = DateTime.UtcNow,
                     FournisseurId = 2,
                     MachineTypeId = 1,
-                    OperateurId = 2,
+                    OperateurId = 2
                 }
                 );
             _modelBuilder.Entity<ChefLieu>().HasData(

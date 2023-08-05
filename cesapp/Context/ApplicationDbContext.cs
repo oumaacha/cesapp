@@ -21,13 +21,13 @@ namespace cesapp.Context
 				.IsRequired(false);
 			modelBuilder.Entity<Machine>()
 				.HasOne(x => x.Operateur)
-				.WithOne()
-				.HasForeignKey<Machine>(x => x.OperateurId)
+				.WithMany()
+				.HasForeignKey(x => x.OperateurId) /**/
 				.IsRequired(false);
 			modelBuilder.Entity<Machine>()
 				.HasOne(x => x.Fournisseur)
-				.WithOne()
-				.HasForeignKey<Machine>(x => x.FournisseurId)
+				.WithMany()
+				.HasForeignKey(x => x.FournisseurId)
 				.IsRequired(false);
 			modelBuilder.Entity<Machine>()
 				.HasOne(x => x.MachineType)
@@ -36,26 +36,33 @@ namespace cesapp.Context
 				.IsRequired(false);
 			modelBuilder.Entity<Chantier>()
 				.HasOne(x => x.Localisation)
-				.WithOne()
+				.WithMany()
+				.HasForeignKey(x => x.LocalisationId)
 				.IsRequired(false);
-			modelBuilder.Entity<Chantier>()
-				.HasMany(x => x.Machines);
-			modelBuilder.Entity<Operateur>()
-				.HasMany(x => x.Workers)
-				.WithOne(x => x.Operateur)
-				.HasForeignKey(x => x.OperateurId)
-				.IsRequired(false);
+			modelBuilder.Entity<Machine>()
+				.HasOne(x => x.Chantier)
+				.WithMany(x => x.Machines)
+				.HasForeignKey(x => x.ChantierId);
+			modelBuilder.Entity<Machine>()
+				.HasOne(x => x.Chantier)
+				.WithMany(x => x.Machines)
+				.HasForeignKey(x => x.ChantierId)
+				.OnDelete(DeleteBehavior.SetNull);
+			modelBuilder.Entity<Worker>()
+				.HasOne(x => x.Operateur)
+				.WithMany(x => x.Workers)
+				.HasForeignKey(x => x.OperateurId);
 			modelBuilder.Entity<Worker>()
 				.Property(x => x.Type)
 				.HasConversion<string>();
-			modelBuilder.Entity<ChefLieu>()
-				.HasMany(x => x.Prefectures)
-				.WithOne(x => x.ChefLieu)
-				.IsRequired(false);
+			modelBuilder.Entity<Prefecture>()
+				.HasOne(x => x.ChefLieu)
+				.WithMany(x => x.Prefectures)
+				.HasForeignKey(x => x.ChefLieuId);
 			modelBuilder.Entity<Localisation>()
 				.HasOne(x => x.Prefecture)
 				.WithOne()
-				.IsRequired(false);
+				.HasForeignKey<Localisation>(x => x.PrefectureId);
 			new DbContextInitializer(modelBuilder).Seed();
 		}
 

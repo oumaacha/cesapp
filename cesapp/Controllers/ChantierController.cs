@@ -64,5 +64,50 @@ namespace cesapp.Controllers
             }
             return RedirectToAction("Index","Chantier");
         }
-    }
+        [Route("/Chantier/Chantier/{id}")]
+        public IActionResult Chantier(int id)
+        {
+            var chantier = _context.Chantiers.Include(x => x.Localisation.Prefecture).Include(x => x.Machines).FirstOrDefault(x => x.ChantierId == id);
+            return View(chantier);
+        }
+        public IActionResult AffecterMachine(int id)
+        {
+            var chantier = _context.Chantiers.FirstOrDefault(c => c.ChantierId == id);
+            if(chantier != null)
+            {
+				return View(chantier);
+			}
+            return Content("le Chantier n'est pas trouvé !");
+        }
+        [Route("/Chantier/GetMachinesByDesignation")]
+        public IEnumerable<Machine> GetMachinesByDesignation()
+        {
+            var designation = Request.Query["D"];
+            var pattern = "%" + designation + "%";
+            var machines = _context.Machines.Where(m => (m.isAvailable && EF.Functions.ILike(m.Designation, pattern)));
+            return machines;
+        }
+
+		[Route("/Chantier/AffecterMachineChantier/{chantierid}")]
+		public IActionResult AffecterMachineChantier(int chantierid)
+        {
+            int machineId = int.Parse(Request.Query["machine"]);
+            var machine = _context.Machines.FirstOrDefault(m => m.MachineId == machineId);
+            if(machine != null)
+            {
+                try
+                {
+					machine.ChantierId = chantierid;
+                    machine.isAvailable = false;
+					_context.SaveChanges();
+
+				}catch(Exception ex)
+                {
+                    return Content("Error en database");
+                }
+				return Json(new { message = "done" });
+            }
+			return Json(new { message = "error" });
+		}
+	}
 }

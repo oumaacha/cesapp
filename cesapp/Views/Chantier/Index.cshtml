@@ -32,7 +32,7 @@
                         <td>@chantier.Progres</td>
                         <td>
                             <a asp-controller="Chantier" asp-action="Delete" asp-route-id="@chantier.ChantierId" class="btn btn-sm btn-danger">Supprimer</a>
-                            <a class="btn btn-sm btn-warning">Plus</a>
+                            <a asp-controller="Chantier" asp-action="Chantier" asp-route-id="@chantier.ChantierId" class="btn btn-sm btn-warning">Plus</a>
                         </td>
                     </tr>
                 }

@@ -1,0 +1,68 @@
+﻿@model Chantier
+@{
+	ViewData["Title"] = "Chantier";
+}
+<div class="p-2">
+		<a asp-controller="Chantier" asp-action="AffecterMachine" asp-route-id="@Model.ChantierId" class="btn btn-sm btn-outline-dark">Affecter une machine</a>
+		<div class="row gap-2">
+			<fieldset class="card-fieldset col-sm">
+				<legend class="legend-title bg-warning">Chantier</legend>
+				<h4>@Model.ChantierName</h4>
+			</fieldset>
+			<fieldset class="card-fieldset col-sm">
+					<legend class="legend-title bg-warning">Budget</legend>
+					<h4>@Model.Budget Dh</h4>
+			</fieldset>
+		</div>
+		<div class="row gap-2">
+			<fieldset class="card-fieldset col-sm">
+					<legend class="legend-title bg-warning">Date de début</legend>
+					<h4>@Model.DateDebut.Date.ToString("dd-MMM-yyyy")</h4>
+			</fieldset>
+			<fieldset class="card-fieldset col-sm">
+					<legend class="legend-title bg-warning">Date de fin</legend>
+					<h4>@Model.DateFin.Date.ToString("dd-MMM-yyyy")</h4>
+			</fieldset>
+		</div>
+		<div class="row gap-2">
+			<fieldset class="card-fieldset col-sm">
+					<p>@Model.Description</p>
+					<legend class="legend-title bg-warning">Description</legend>
+			</fieldset>
+		</div>
+		<div class="row gap-2">
+			<fieldset class="card-fieldset col-sm">
+					<legend class="legend-title bg-warning">Progres</legend>
+					<div class="progress">
+						<div class="progress-bar bg-success" id="progressbar" role="progressbar" style="width: 0%" aria-valuenow="@Model.Progres" aria-valuemin="0" aria-valuemax="100">@Model.Progres%</div>
+					</div>
+			</fieldset>
+			<fieldset class="card-fieldset col-sm">
+				<legend class="legend-title bg-warning">Localisation</legend>
+				<h4>@Model.Localisation.Prefecture.PrefectureName</h4>
+			</fieldset>
+		</div>
+		<div class="row gap-2">
+			<fieldset class="card-fieldset col-sm">
+				<legend class="legend-title bg-warning">Les machines</legend>
+				<div>
+					@foreach(var machine in Model.Machines)
+					{
+						<div class="badge bg-dark m-1">
+							@machine.Designation
+						</div>
+					}
+				</div>
+			</fieldset>
+		</div>
+</div>
+<script>
+	const progressbar = document.getElementById("progressbar")
+	document.addEventListener('DOMContentLoaded',()=>{
+		for(let i = 0; i < @Model.Progres ; i++){
+			setTimeout(()=>{
+				progressbar.style.width = i+"%"
+			},100)
+		}
+	})
+</script>

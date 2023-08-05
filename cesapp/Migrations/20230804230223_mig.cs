@@ -97,7 +97,8 @@ namespace cesapp.Migrations
                         name: "FK_Prefectures_ChefLieux_ChefLieuId",
                         column: x => x.ChefLieuId,
                         principalTable: "ChefLieux",
-                        principalColumn: "LieuId");
+                        principalColumn: "LieuId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,7 +119,8 @@ namespace cesapp.Migrations
                         name: "FK_Workers_Operateurs_OperateurId",
                         column: x => x.OperateurId,
                         principalTable: "Operateurs",
-                        principalColumn: "OperateurId");
+                        principalColumn: "OperateurId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,7 +165,8 @@ namespace cesapp.Migrations
                         name: "FK_Localisations_Prefectures_PrefectureId",
                         column: x => x.PrefectureId,
                         principalTable: "Prefectures",
-                        principalColumn: "PrefectureId");
+                        principalColumn: "PrefectureId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -212,7 +215,8 @@ namespace cesapp.Migrations
                         name: "FK_Machines_Chantiers_ChantierId",
                         column: x => x.ChantierId,
                         principalTable: "Chantiers",
-                        principalColumn: "ChantierId");
+                        principalColumn: "ChantierId",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Machines_Fournisseurs_FournisseurId",
                         column: x => x.FournisseurId,
@@ -293,8 +297,8 @@ namespace cesapp.Migrations
                 columns: new[] { "MachineId", "ChantierId", "DateAcquisition", "Designation", "FournisseurId", "MachineTypeId", "Nfacteur", "OperateurId", "isAvailable" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8862), "Machine A", 1, 1, "15484", 1, true },
-                    { 2, null, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8865), "Machine B", 2, 1, "15484", 2, true }
+                    { 1, null, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8436), "Machine A", 1, 1, "15484", 1, true },
+                    { 2, null, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8439), "Machine B", 2, 1, "15484", 2, true }
                 });
 
             migrationBuilder.InsertData(
@@ -322,8 +326,8 @@ namespace cesapp.Migrations
                 columns: new[] { "UserId", "Created", "Email", "FirstName", "IsEmailConfirmed", "LastConnection", "LastName", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8693), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
-                    { 2, new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8699), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
+                    { 1, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8104), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
+                    { 2, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8111), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -338,11 +342,24 @@ namespace cesapp.Migrations
                     { 6, 2, "0613395473", "AID_SONDEUR", "Worker E" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "Localisations",
+                columns: new[] { "LocalisationId", "PrefectureId", "X", "Y" },
+                values: new object[] { 1, 2, 24.0, 45.0 });
+
+            migrationBuilder.InsertData(
+                table: "Chantiers",
+                columns: new[] { "ChantierId", "Budget", "ChantierName", "DateDebut", "DateFin", "Description", "LocalisationId", "Progres" },
+                values: new object[,]
+                {
+                    { 1, 40000.0, "XP Boskoura AR472", new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8395), new DateTime(2023, 8, 14, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8396), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 55 },
+                    { 2, 60000.0, "XP Boskoura AR472", new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8406), new DateTime(2023, 8, 24, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8407), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 0 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Chantiers_LocalisationId",
                 table: "Chantiers",
-                column: "LocalisationId",
-                unique: true);
+                column: "LocalisationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Localisations_PrefectureId",
@@ -358,8 +375,7 @@ namespace cesapp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Machines_FournisseurId",
                 table: "Machines",
-                column: "FournisseurId",
-                unique: true);
+                column: "FournisseurId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Machines_MachineTypeId",
@@ -369,8 +385,7 @@ namespace cesapp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Machines_OperateurId",
                 table: "Machines",
-                column: "OperateurId",
-                unique: true);
+                column: "OperateurId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prefectures_ChefLieuId",

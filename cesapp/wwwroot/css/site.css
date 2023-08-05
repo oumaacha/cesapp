@@ -16,3 +16,24 @@ html {
 body {
   margin-bottom: 60px;
 }
+.card-fieldset {
+    border: 1px solid #808080;
+    padding: 20px;
+    position: relative;
+    margin-top: 20px;
+}
+
+.legend-title {
+    color: #161616;
+    font-size: 13px;
+    padding : 1px 4px;
+    border-radius: 5px;
+    width: auto;
+    position:absolute;
+    top : 0;
+    transform: translateY(-50%);
+
+}
+.a-hover-effect:hover{
+    color: yellow;
+}

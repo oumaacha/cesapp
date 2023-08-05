@@ -12,7 +12,7 @@ using cesapp.Context;
 namespace cesapp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230801152246_mig")]
+    [Migration("20230804230223_mig")]
     partial class mig
     {
         /// <inheritdoc />
@@ -57,10 +57,33 @@ namespace cesapp.Migrations
 
                     b.HasKey("ChantierId");
 
-                    b.HasIndex("LocalisationId")
-                        .IsUnique();
+                    b.HasIndex("LocalisationId");
 
                     b.ToTable("Chantiers");
+
+                    b.HasData(
+                        new
+                        {
+                            ChantierId = 1,
+                            Budget = 40000.0,
+                            ChantierName = "XP Boskoura AR472",
+                            DateDebut = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8395),
+                            DateFin = new DateTime(2023, 8, 14, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8396),
+                            Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
+                            LocalisationId = 1,
+                            Progres = 55
+                        },
+                        new
+                        {
+                            ChantierId = 2,
+                            Budget = 60000.0,
+                            ChantierName = "XP Boskoura AR472",
+                            DateDebut = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8406),
+                            DateFin = new DateTime(2023, 8, 24, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8407),
+                            Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
+                            LocalisationId = 1,
+                            Progres = 0
+                        });
                 });
 
             modelBuilder.Entity("cesapp.Models.ChefLieu", b =>
@@ -194,6 +217,15 @@ namespace cesapp.Migrations
                         .IsUnique();
 
                     b.ToTable("Localisations");
+
+                    b.HasData(
+                        new
+                        {
+                            LocalisationId = 1,
+                            PrefectureId = 2,
+                            X = 24.0,
+                            Y = 45.0
+                        });
                 });
 
             modelBuilder.Entity("cesapp.Models.Machine", b =>
@@ -234,13 +266,11 @@ namespace cesapp.Migrations
 
                     b.HasIndex("ChantierId");
 
-                    b.HasIndex("FournisseurId")
-                        .IsUnique();
+                    b.HasIndex("FournisseurId");
 
                     b.HasIndex("MachineTypeId");
 
-                    b.HasIndex("OperateurId")
-                        .IsUnique();
+                    b.HasIndex("OperateurId");
 
                     b.ToTable("Machines");
 
@@ -248,7 +278,7 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 1,
-                            DateAcquisition = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8862),
+                            DateAcquisition = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8436),
                             Designation = "Machine A",
                             FournisseurId = 1,
                             MachineTypeId = 1,
@@ -259,7 +289,7 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 2,
-                            DateAcquisition = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8865),
+                            DateAcquisition = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8439),
                             Designation = "Machine B",
                             FournisseurId = 2,
                             MachineTypeId = 1,
@@ -534,7 +564,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 1,
-                            Created = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8693),
+                            Created = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8104),
                             Email = "oumaachaanouar@gmail.com",
                             FirstName = "Anouar",
                             IsEmailConfirmed = false,
@@ -545,7 +575,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 2,
-                            Created = new DateTime(2023, 8, 1, 15, 22, 46, 12, DateTimeKind.Utc).AddTicks(8699),
+                            Created = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8111),
                             Email = "naimkawtar@gmail.com",
                             FirstName = "Kawtar",
                             IsEmailConfirmed = false,
@@ -629,8 +659,8 @@ namespace cesapp.Migrations
             modelBuilder.Entity("cesapp.Models.Chantier", b =>
                 {
                     b.HasOne("cesapp.Models.Localisation", "Localisation")
-                        .WithOne()
-                        .HasForeignKey("cesapp.Models.Chantier", "LocalisationId");
+                        .WithMany()
+                        .HasForeignKey("LocalisationId");
 
                     b.Navigation("Localisation");
                 });
@@ -639,28 +669,33 @@ namespace cesapp.Migrations
                 {
                     b.HasOne("cesapp.Models.Prefecture", "Prefecture")
                         .WithOne()
-                        .HasForeignKey("cesapp.Models.Localisation", "PrefectureId");
+                        .HasForeignKey("cesapp.Models.Localisation", "PrefectureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Prefecture");
                 });
 
             modelBuilder.Entity("cesapp.Models.Machine", b =>
                 {
-                    b.HasOne("cesapp.Models.Chantier", null)
+                    b.HasOne("cesapp.Models.Chantier", "Chantier")
                         .WithMany("Machines")
-                        .HasForeignKey("ChantierId");
+                        .HasForeignKey("ChantierId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("cesapp.Models.Fournisseur", "Fournisseur")
-                        .WithOne()
-                        .HasForeignKey("cesapp.Models.Machine", "FournisseurId");
+                        .WithMany()
+                        .HasForeignKey("FournisseurId");
 
                     b.HasOne("cesapp.Models.MachineType", "MachineType")
                         .WithMany("Machines")
                         .HasForeignKey("MachineTypeId");
 
                     b.HasOne("cesapp.Models.Operateur", "Operateur")
-                        .WithOne()
-                        .HasForeignKey("cesapp.Models.Machine", "OperateurId");
+                        .WithMany()
+                        .HasForeignKey("OperateurId");
+
+                    b.Navigation("Chantier");
 
                     b.Navigation("Fournisseur");
 
@@ -673,7 +708,9 @@ namespace cesapp.Migrations
                 {
                     b.HasOne("cesapp.Models.ChefLieu", "ChefLieu")
                         .WithMany("Prefectures")
-                        .HasForeignKey("ChefLieuId");
+                        .HasForeignKey("ChefLieuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ChefLieu");
                 });
@@ -691,7 +728,9 @@ namespace cesapp.Migrations
                 {
                     b.HasOne("cesapp.Models.Operateur", "Operateur")
                         .WithMany("Workers")
-                        .HasForeignKey("OperateurId");
+                        .HasForeignKey("OperateurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Operateur");
                 });

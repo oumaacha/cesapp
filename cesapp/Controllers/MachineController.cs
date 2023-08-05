@@ -43,6 +43,7 @@ namespace cesapp.Controllers
                     Nfacteur = machine.Nfacteur,
                     FournisseurId = 0,
                     MachineTypeId = 0,
+                    ChantierId = null,
                     OperateurId = int.Parse(Request.Form["selectedOperateur"])
                 };
                 if (Request.Form["selectedFournisseur"] == "autre")

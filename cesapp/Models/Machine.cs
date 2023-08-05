@@ -17,8 +17,10 @@ namespace cesapp.Models
         public int FournisseurId { get; set; }
         public int MachineTypeId { get; set; }
         public int OperateurId { get; set; }
+        public int? ChantierId { get; set; }
         public Operateur Operateur { get; set; }
         public Fournisseur Fournisseur { get; set; }
         public MachineType MachineType { get; set; }
+        public Chantier Chantier { get; set; }
     }
 }

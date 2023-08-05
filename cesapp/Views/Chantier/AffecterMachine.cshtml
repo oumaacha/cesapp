@@ -1,0 +1,80 @@
+﻿@model Chantier
+@{
+	ViewData["Title"] = "Affecter une machine";
+}
+<div class="d-flex justify-content-center align-items-center mt-2">
+	<div class="card w-75">
+		<div class="card-header">Chantier [@Model.ChantierName] - Affecter une machine</div>
+		<div class="card-body">
+			<div class="input-group mb-3">
+				<input type="text" class="form-control" id="machinesearch" placeholder="L'identifiant" aria-label="Recipient's username" aria-describedby="button-addon2">
+			</div>
+			<div class="card">
+				<div class="card-body">
+					<div id="machinescontainer">
+						<!-- this part is gonna filled using js-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	const machinescontainer = document.getElementById("machinescontainer");
+	const machinesearch = document.getElementById("machinesearch");
+	var url = "/Chantier/GetMachinesByDesignation?D=";
+
+	document.addEventListener("DOMContentLoaded", function () {
+		loadMachines();
+	});
+
+
+	machinesearch.addEventListener("input", (e) => {
+		url = "/Chantier/GetMachinesByDesignation?D=" + e.target.value;
+		machinescontainer.innerHTML = "";
+		loadMachines();
+	});
+
+	function loadMachines() {
+		fetch(url)
+			.then(response => response.json())
+			.then(data => {
+				data.forEach(o => {
+					const btn = document.createElement('button');
+					btn.innerText = o.designation;
+					btn.setAttribute("class", "a-hover-effect mx-1 badge bg-dark");
+					btn.setAttribute("id", o.machineId);
+					addClickEvent(btn,"click")
+					machinescontainer.appendChild(btn);
+				});
+			})
+			.catch(error => console.log("error => " + error));
+	}
+	function addClickEvent(element,event){
+		element.addEventListener(event,()=>{
+			let affectationUrl = `/Chantier/AffecterMachineChantier/${@Model.ChantierId}?machine=`
+			affectationUrl += element.getAttribute("id")
+			fetch(affectationUrl)
+			.then(response => response.json())
+			.then(result => {
+					if(result.message == "done"){
+						loadMachines()
+						Swal.fire(
+							'L\'opération est effectuée avec succès',
+							'',
+							'success'
+						)	
+					}else{
+						Swal.fire(
+							'L\'opération a échoué',
+							'',
+							'error'
+						)
+					}
+			})
+			.catch(error => console.error(error))
+		})
+	}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
