@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace cesapp.Migrations
 {
     /// <inheritdoc />
-    public partial class mig : Migration
+    public partial class mig1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,32 @@ namespace cesapp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChefLieux", x => x.LieuId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    ClientId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ClientName = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.ClientId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConsommationsType",
+                columns: table => new
+                {
+                    ConsommationTypeId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Type = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConsommationsType", x => x.ConsommationTypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,6 +92,20 @@ namespace cesapp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Operateurs", x => x.OperateurId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Responsables",
+                columns: table => new
+                {
+                    ResponsableId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ResponsableFName = table.Column<string>(type: "text", nullable: false),
+                    ResponsableLName = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Responsables", x => x.ResponsableId);
                 });
 
             migrationBuilder.CreateTable(
@@ -120,6 +160,35 @@ namespace cesapp.Migrations
                         column: x => x.OperateurId,
                         principalTable: "Operateurs",
                         principalColumn: "OperateurId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dossiers",
+                columns: table => new
+                {
+                    DossierId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DossierNum = table.Column<string>(type: "text", nullable: false),
+                    DateOuv = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Objet = table.Column<string>(type: "text", nullable: false),
+                    ResponsableId = table.Column<int>(type: "integer", nullable: false),
+                    ClientId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dossiers", x => x.DossierId);
+                    table.ForeignKey(
+                        name: "FK_Dossiers_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "ClientId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Dossiers_Responsables_ResponsableId",
+                        column: x => x.ResponsableId,
+                        principalTable: "Responsables",
+                        principalColumn: "ResponsableId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -181,11 +250,18 @@ namespace cesapp.Migrations
                     DateFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Budget = table.Column<double>(type: "double precision", nullable: false),
                     Progres = table.Column<int>(type: "integer", nullable: false),
-                    LocalisationId = table.Column<int>(type: "integer", nullable: false)
+                    LocalisationId = table.Column<int>(type: "integer", nullable: false),
+                    DossierId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chantiers", x => x.ChantierId);
+                    table.ForeignKey(
+                        name: "FK_Chantiers_Dossiers_DossierId",
+                        column: x => x.DossierId,
+                        principalTable: "Dossiers",
+                        principalColumn: "DossierId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Chantiers_Localisations_LocalisationId",
                         column: x => x.LocalisationId,
@@ -203,6 +279,7 @@ namespace cesapp.Migrations
                     Nfacteur = table.Column<string>(type: "text", nullable: false),
                     DateAcquisition = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     isAvailable = table.Column<bool>(type: "boolean", nullable: false),
+                    situation = table.Column<int>(type: "integer", nullable: false),
                     FournisseurId = table.Column<int>(type: "integer", nullable: false),
                     MachineTypeId = table.Column<int>(type: "integer", nullable: false),
                     OperateurId = table.Column<int>(type: "integer", nullable: false),
@@ -234,6 +311,41 @@ namespace cesapp.Migrations
                         principalColumn: "OperateurId");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Consommations",
+                columns: table => new
+                {
+                    ConsommationId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MontantEnDh = table.Column<decimal>(type: "numeric", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    OperateurId = table.Column<int>(type: "integer", nullable: false),
+                    ConsommationTypeId = table.Column<int>(type: "integer", nullable: false),
+                    MachineId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Consommations", x => x.ConsommationId);
+                    table.ForeignKey(
+                        name: "FK_Consommations_ConsommationsType_ConsommationTypeId",
+                        column: x => x.ConsommationTypeId,
+                        principalTable: "ConsommationsType",
+                        principalColumn: "ConsommationTypeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Consommations_Machines_MachineId",
+                        column: x => x.MachineId,
+                        principalTable: "Machines",
+                        principalColumn: "MachineId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Consommations_Operateurs_OperateurId",
+                        column: x => x.OperateurId,
+                        principalTable: "Operateurs",
+                        principalColumn: "OperateurId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "ChefLieux",
                 columns: new[] { "LieuId", "LieuName" },
@@ -251,6 +363,21 @@ namespace cesapp.Migrations
                     { 10, "Guelmim" },
                     { 11, "Laâyoune" },
                     { 12, "Dakhla-Oued-Eddahab" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Clients",
+                columns: new[] { "ClientId", "ClientName" },
+                values: new object[] { 1, "Client A" });
+
+            migrationBuilder.InsertData(
+                table: "ConsommationsType",
+                columns: new[] { "ConsommationTypeId", "Type" },
+                values: new object[,]
+                {
+                    { 1, "Carburant" },
+                    { 2, "Vidange" },
+                    { 3, "Achat d'accessoire" }
                 });
 
             migrationBuilder.InsertData(
@@ -284,6 +411,11 @@ namespace cesapp.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Responsables",
+                columns: new[] { "ResponsableId", "ResponsableFName", "ResponsableLName" },
+                values: new object[] { 1, "Najib", "Elgoumi" });
+
+            migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "RoleId", "RoleName" },
                 values: new object[,]
@@ -293,12 +425,18 @@ namespace cesapp.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Dossiers",
+                columns: new[] { "DossierId", "ClientId", "DateOuv", "DossierNum", "Objet", "ResponsableId" },
+                values: new object[] { 1, 1, new DateTime(2023, 8, 23, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8131), "1455-1457-2486-3479", "Objet Object Objet", 1 });
+
+            migrationBuilder.InsertData(
                 table: "Machines",
-                columns: new[] { "MachineId", "ChantierId", "DateAcquisition", "Designation", "FournisseurId", "MachineTypeId", "Nfacteur", "OperateurId", "isAvailable" },
+                columns: new[] { "MachineId", "ChantierId", "DateAcquisition", "Designation", "FournisseurId", "MachineTypeId", "Nfacteur", "OperateurId", "isAvailable", "situation" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8436), "Machine A", 1, 1, "15484", 1, true },
-                    { 2, null, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8439), "Machine B", 2, 1, "15484", 2, true }
+                    { 1, null, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8229), "Machine A", 1, 1, "15484", 1, true, 1 },
+                    { 2, null, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8232), "Machine B", 2, 1, "15484", 2, true, 1 },
+                    { 3, null, new DateTime(2023, 8, 1, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8234), "Machine C", 1, 1, "45789", 1, true, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -326,8 +464,8 @@ namespace cesapp.Migrations
                 columns: new[] { "UserId", "Created", "Email", "FirstName", "IsEmailConfirmed", "LastConnection", "LastName", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8104), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
-                    { 2, new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8111), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
+                    { 1, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7282), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
+                    { 2, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7292), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -349,17 +487,51 @@ namespace cesapp.Migrations
 
             migrationBuilder.InsertData(
                 table: "Chantiers",
-                columns: new[] { "ChantierId", "Budget", "ChantierName", "DateDebut", "DateFin", "Description", "LocalisationId", "Progres" },
+                columns: new[] { "ChantierId", "Budget", "ChantierName", "DateDebut", "DateFin", "Description", "DossierId", "LocalisationId", "Progres" },
                 values: new object[,]
                 {
-                    { 1, 40000.0, "XP Boskoura AR472", new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8395), new DateTime(2023, 8, 14, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8396), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 55 },
-                    { 2, 60000.0, "XP Boskoura AR472", new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8406), new DateTime(2023, 8, 24, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8407), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 0 }
+                    { 1, 40000.0, "Chantier AR472", new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181), new DateTime(2023, 8, 31, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 55 },
+                    { 2, 60000.0, "Chantier XOP98", new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186), new DateTime(2023, 9, 10, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 0 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chantiers_DossierId",
+                table: "Chantiers",
+                column: "DossierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Chantiers_LocalisationId",
                 table: "Chantiers",
                 column: "LocalisationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Consommations_ConsommationTypeId",
+                table: "Consommations",
+                column: "ConsommationTypeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Consommations_MachineId",
+                table: "Consommations",
+                column: "MachineId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Consommations_OperateurId",
+                table: "Consommations",
+                column: "OperateurId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dossiers_ClientId",
+                table: "Dossiers",
+                column: "ClientId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Dossiers_ResponsableId",
+                table: "Dossiers",
+                column: "ResponsableId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Localisations_PrefectureId",
@@ -407,13 +579,22 @@ namespace cesapp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Machines");
+                name: "Consommations");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Workers");
+
+            migrationBuilder.DropTable(
+                name: "ConsommationsType");
+
+            migrationBuilder.DropTable(
+                name: "Machines");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Chantiers");
@@ -425,13 +606,19 @@ namespace cesapp.Migrations
                 name: "MachineTypes");
 
             migrationBuilder.DropTable(
-                name: "Roles");
-
-            migrationBuilder.DropTable(
                 name: "Operateurs");
 
             migrationBuilder.DropTable(
+                name: "Dossiers");
+
+            migrationBuilder.DropTable(
                 name: "Localisations");
+
+            migrationBuilder.DropTable(
+                name: "Clients");
+
+            migrationBuilder.DropTable(
+                name: "Responsables");
 
             migrationBuilder.DropTable(
                 name: "Prefectures");

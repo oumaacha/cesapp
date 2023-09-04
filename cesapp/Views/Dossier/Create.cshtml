@@ -1,0 +1,59 @@
+﻿@model Dossier
+@{
+    ViewData["Title"] = "Ajouter un dossier";
+    var clients = ViewData["clients"] as IEnumerable<Client>;
+    var responsables = ViewData["responsables"] as IEnumerable<Responsable>;
+}
+<div class="card">
+    <div class="card-header">
+        <h5 class="text-muted">Ajouter un nouveau dossier</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-controller="Dossier" asp-action="Create">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label class="form-label">Numéro de dossier</label>
+                <span class="text-danger small" asp-validation-for="DossierNum"></span>
+                <input asp-for="DossierNum" class="form-control">
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Date d'ouverture</label>
+                    <span class="text-danger small" asp-validation-for="DateOuv"></span>
+                    <input type="Date" asp-for="DateOuv" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Objet</label>
+                    <span class="text-danger small" asp-validation-for="Objet"></span>
+                    <input asp-for="Objet" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Responsable</label>
+                    <span class="text-danger small" asp-validation-for="ResponsableId"></span>
+                    <select asp-for="ResponsableId" class="form-select">
+                    <option>Choisir le responsable</option>
+                    @foreach(var responsable in responsables)
+                    {
+                            <option value="@responsable.ResponsableId">@responsable.ResponsableLName @responsable.ResponsableFName</option>
+                    }
+                    </select>
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Client</label>
+                    <span class="text-danger small" asp-validation-for="ClientId"></span>
+                    <select asp-for="ClientId" class="form-select">
+                        <option>Choisir le client</option>
+                        @foreach (var client in clients)
+                        {
+                            <option value="@client.ClientId">@client.ClientName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
+            <a asp-controller="Dossier" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+    </div>
+</div>

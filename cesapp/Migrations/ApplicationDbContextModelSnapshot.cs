@@ -46,6 +46,9 @@ namespace cesapp.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<int>("DossierId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("LocalisationId")
                         .HasColumnType("integer");
 
@@ -53,6 +56,8 @@ namespace cesapp.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("ChantierId");
+
+                    b.HasIndex("DossierId");
 
                     b.HasIndex("LocalisationId");
 
@@ -63,10 +68,11 @@ namespace cesapp.Migrations
                         {
                             ChantierId = 1,
                             Budget = 40000.0,
-                            ChantierName = "XP Boskoura AR472",
-                            DateDebut = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8395),
-                            DateFin = new DateTime(2023, 8, 14, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8396),
+                            ChantierName = "Chantier AR472",
+                            DateDebut = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181),
+                            DateFin = new DateTime(2023, 8, 31, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181),
                             Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
+                            DossierId = 1,
                             LocalisationId = 1,
                             Progres = 55
                         },
@@ -74,10 +80,11 @@ namespace cesapp.Migrations
                         {
                             ChantierId = 2,
                             Budget = 60000.0,
-                            ChantierName = "XP Boskoura AR472",
-                            DateDebut = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8406),
-                            DateFin = new DateTime(2023, 8, 24, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8407),
+                            ChantierName = "Chantier XOP98",
+                            DateDebut = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186),
+                            DateFin = new DateTime(2023, 9, 10, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186),
                             Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
+                            DossierId = 1,
                             LocalisationId = 1,
                             Progres = 0
                         });
@@ -159,6 +166,146 @@ namespace cesapp.Migrations
                         {
                             LieuId = 12,
                             LieuName = "Dakhla-Oued-Eddahab"
+                        });
+                });
+
+            modelBuilder.Entity("cesapp.Models.Client", b =>
+                {
+                    b.Property<int>("ClientId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ClientId"));
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ClientId");
+
+                    b.ToTable("Clients");
+
+                    b.HasData(
+                        new
+                        {
+                            ClientId = 1,
+                            ClientName = "Client A"
+                        });
+                });
+
+            modelBuilder.Entity("cesapp.Models.Consommation", b =>
+                {
+                    b.Property<int>("ConsommationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ConsommationId"));
+
+                    b.Property<int>("ConsommationTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("MachineId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("MontantEnDh")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("OperateurId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ConsommationId");
+
+                    b.HasIndex("ConsommationTypeId")
+                        .IsUnique();
+
+                    b.HasIndex("MachineId")
+                        .IsUnique();
+
+                    b.HasIndex("OperateurId")
+                        .IsUnique();
+
+                    b.ToTable("Consommations");
+                });
+
+            modelBuilder.Entity("cesapp.Models.ConsommationType", b =>
+                {
+                    b.Property<int>("ConsommationTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ConsommationTypeId"));
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.HasKey("ConsommationTypeId");
+
+                    b.ToTable("ConsommationsType");
+
+                    b.HasData(
+                        new
+                        {
+                            ConsommationTypeId = 1,
+                            Type = "Carburant"
+                        },
+                        new
+                        {
+                            ConsommationTypeId = 2,
+                            Type = "Vidange"
+                        },
+                        new
+                        {
+                            ConsommationTypeId = 3,
+                            Type = "Achat d'accessoire"
+                        });
+                });
+
+            modelBuilder.Entity("cesapp.Models.Dossier", b =>
+                {
+                    b.Property<int>("DossierId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DossierId"));
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("DateOuv")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DossierNum")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Objet")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ResponsableId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("DossierId");
+
+                    b.HasIndex("ClientId")
+                        .IsUnique();
+
+                    b.HasIndex("ResponsableId");
+
+                    b.ToTable("Dossiers");
+
+                    b.HasData(
+                        new
+                        {
+                            DossierId = 1,
+                            ClientId = 1,
+                            DateOuv = new DateTime(2023, 8, 23, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8131),
+                            DossierNum = "1455-1457-2486-3479",
+                            Objet = "Objet Object Objet",
+                            ResponsableId = 1
                         });
                 });
 
@@ -259,6 +406,9 @@ namespace cesapp.Migrations
                     b.Property<bool>("isAvailable")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("situation")
+                        .HasColumnType("integer");
+
                     b.HasKey("MachineId");
 
                     b.HasIndex("ChantierId");
@@ -275,24 +425,38 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 1,
-                            DateAcquisition = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8436),
+                            DateAcquisition = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8229),
                             Designation = "Machine A",
                             FournisseurId = 1,
                             MachineTypeId = 1,
                             Nfacteur = "15484",
                             OperateurId = 1,
-                            isAvailable = true
+                            isAvailable = true,
+                            situation = 1
                         },
                         new
                         {
                             MachineId = 2,
-                            DateAcquisition = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8439),
+                            DateAcquisition = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8232),
                             Designation = "Machine B",
                             FournisseurId = 2,
                             MachineTypeId = 1,
                             Nfacteur = "15484",
                             OperateurId = 2,
-                            isAvailable = true
+                            isAvailable = true,
+                            situation = 1
+                        },
+                        new
+                        {
+                            MachineId = 3,
+                            DateAcquisition = new DateTime(2023, 8, 1, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8234),
+                            Designation = "Machine C",
+                            FournisseurId = 1,
+                            MachineTypeId = 1,
+                            Nfacteur = "45789",
+                            OperateurId = 1,
+                            isAvailable = true,
+                            situation = 1
                         });
                 });
 
@@ -484,6 +648,35 @@ namespace cesapp.Migrations
                         });
                 });
 
+            modelBuilder.Entity("cesapp.Models.Responsable", b =>
+                {
+                    b.Property<int>("ResponsableId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ResponsableId"));
+
+                    b.Property<string>("ResponsableFName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ResponsableLName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ResponsableId");
+
+                    b.ToTable("Responsables");
+
+                    b.HasData(
+                        new
+                        {
+                            ResponsableId = 1,
+                            ResponsableFName = "Najib",
+                            ResponsableLName = "Elgoumi"
+                        });
+                });
+
             modelBuilder.Entity("cesapp.Models.Role", b =>
                 {
                     b.Property<int>("RoleId")
@@ -561,7 +754,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 1,
-                            Created = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8104),
+                            Created = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7282),
                             Email = "oumaachaanouar@gmail.com",
                             FirstName = "Anouar",
                             IsEmailConfirmed = false,
@@ -572,7 +765,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 2,
-                            Created = new DateTime(2023, 8, 4, 23, 2, 23, 332, DateTimeKind.Utc).AddTicks(8111),
+                            Created = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7292),
                             Email = "naimkawtar@gmail.com",
                             FirstName = "Kawtar",
                             IsEmailConfirmed = false,
@@ -655,11 +848,65 @@ namespace cesapp.Migrations
 
             modelBuilder.Entity("cesapp.Models.Chantier", b =>
                 {
+                    b.HasOne("cesapp.Models.Dossier", "Dossier")
+                        .WithMany("Chantiers")
+                        .HasForeignKey("DossierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("cesapp.Models.Localisation", "Localisation")
                         .WithMany()
                         .HasForeignKey("LocalisationId");
 
+                    b.Navigation("Dossier");
+
                     b.Navigation("Localisation");
+                });
+
+            modelBuilder.Entity("cesapp.Models.Consommation", b =>
+                {
+                    b.HasOne("cesapp.Models.ConsommationType", "consommationType")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Consommation", "ConsommationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cesapp.Models.Machine", "Machine")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Consommation", "MachineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cesapp.Models.Operateur", "Operateur")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Consommation", "OperateurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Machine");
+
+                    b.Navigation("Operateur");
+
+                    b.Navigation("consommationType");
+                });
+
+            modelBuilder.Entity("cesapp.Models.Dossier", b =>
+                {
+                    b.HasOne("cesapp.Models.Client", "Client")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Dossier", "ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cesapp.Models.Responsable", "Responsable")
+                        .WithMany("Dossiers")
+                        .HasForeignKey("ResponsableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Responsable");
                 });
 
             modelBuilder.Entity("cesapp.Models.Localisation", b =>
@@ -742,6 +989,11 @@ namespace cesapp.Migrations
                     b.Navigation("Prefectures");
                 });
 
+            modelBuilder.Entity("cesapp.Models.Dossier", b =>
+                {
+                    b.Navigation("Chantiers");
+                });
+
             modelBuilder.Entity("cesapp.Models.MachineType", b =>
                 {
                     b.Navigation("Machines");
@@ -750,6 +1002,11 @@ namespace cesapp.Migrations
             modelBuilder.Entity("cesapp.Models.Operateur", b =>
                 {
                     b.Navigation("Workers");
+                });
+
+            modelBuilder.Entity("cesapp.Models.Responsable", b =>
+                {
+                    b.Navigation("Dossiers");
                 });
 
             modelBuilder.Entity("cesapp.Models.Role", b =>

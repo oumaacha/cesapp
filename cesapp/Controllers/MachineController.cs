@@ -1,19 +1,29 @@
 ﻿using cesapp.Context;
-using cesapp.Models;
+using cesapp.Models;  
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using cesapp.Services;
+using X.PagedList.Mvc.Core;
+using X.PagedList;
 
 namespace cesapp.Controllers
 {
     public class MachineController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public MachineController(ApplicationDbContext context)
+        private readonly IExcelFileHandler _excelFileHandler;
+        public MachineController(ApplicationDbContext context, IExcelFileHandler excelFileHandler)
         {
             _context = context;
+            _excelFileHandler = excelFileHandler;
         }
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            IEnumerable<Machine> machines = _context.Machines;
+            int pageNumber = page ?? 1;
+			int pageSize = 9;
+            var machines = _context.Machines
+                .ToPagedList(pageNumber, pageSize);
             return View(machines);
         }
         public IActionResult Create()
@@ -29,13 +39,13 @@ namespace cesapp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Machine machine) {
+        public IActionResult Create(Models.Machine machine) {
 
             if (ModelState.IsValid)
             {
                 var maxIdMachine = _context.Machines.Max(M => M.MachineId);
                 var r = Request.Form["selectedFournisseur"];
-                var newMachine = new Machine()
+                var newMachine = new Models.Machine()
                 {
                     MachineId = maxIdMachine + 1,
                     Designation = machine.Designation,
@@ -74,7 +84,17 @@ namespace cesapp.Controllers
                 _context.Machines.Add(newMachine);
                 _context.SaveChanges();
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Machine");
+        }
+        public IActionResult MachineById(int id)
+        {
+            var machine = _context.Machines
+                .Include(M => M.Chantier)
+                .Include(M => M.MachineType)
+                .Include(M => M.Fournisseur)
+                .Include(M => M.Operateur)
+                .FirstOrDefault(m => m.MachineId == id);
+            return View(machine);
         }
         public IActionResult Delete(int id)
         {
@@ -87,5 +107,35 @@ namespace cesapp.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index", "Machine");
         }
-    }
+
+        public IActionResult AddMachinesUsingFile()
+        {
+            return View();
+        }
+
+		[HttpPost]
+        [ValidateAntiForgeryToken]
+		public ActionResult UploadFile(IFormFile file)
+		{
+			if (file != null && file.Length > 0)
+			{
+				using (var package = new ExcelPackage(file.OpenReadStream()))
+				{
+					ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    int lineError= _excelFileHandler.fileValidation(worksheet);
+                    if (lineError == 0)
+                    {
+                        _excelFileHandler.insertInDatabase(worksheet);
+                        return Content("file valide");
+                    }
+                    else
+                    {
+						return Content("Le format des données est invalide à la ligne "+lineError);
+					}
+				}
+			}
+
+            return Content(file.FileName);
+		}
+	}
 }

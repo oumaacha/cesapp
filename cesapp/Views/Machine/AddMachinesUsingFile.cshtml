@@ -1,0 +1,15 @@
+﻿
+@{
+	ViewData["Title"] = "Upload a file";
+}
+<div class="card">
+	<div class="card-header">Uploader un fichier Excel</div>
+	<div class="card-body">
+		<form asp-controller="Machine" asp-action="UploadFile" class="mb-3" enctype="multipart/form-data">
+			@Html.AntiForgeryToken()
+			<label for="formFile" class="form-label">Default file input example</label>
+			<input name="file" class="form-control mb-3" type="file" id="formFile">
+			<button type="submit" class="btn btn-primary">Envoyer</button>
+		</form>
+	</div>
+</div>

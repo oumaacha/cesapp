@@ -1,0 +1,45 @@
+﻿@model Dossier
+@{
+	ViewData["Title"] = "Dossier";
+}
+<div class="p-1">
+	<div class="row gap-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Numéro de dossier</legend>
+			<h5>@Model.DossierNum</h5>
+		</fieldset>
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Date d'ouverture</legend>
+			<h5>@Model.DateOuv.ToString("dd-MM-yyyy")</h5>
+		</fieldset>
+	</div>
+
+	<div class="row gap-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Objet</legend>
+			<h5>@Model.Objet</h5>
+		</fieldset>
+	</div>
+
+	<div class="row gap-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Client</legend>
+			<h5>@Model.Client.ClientName</h5>
+		</fieldset>
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Responsable</legend>
+			<h5>@Model.Responsable.ResponsableLName @Model.Responsable.ResponsableFName</h5>
+		</fieldset>
+	</div>
+	<div class="row gap-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Chantier(s)</legend>
+			<ul class="list-group">
+			@foreach(var chantier in Model.Chantiers)
+			{
+				<li class="list-group-item">@chantier.ChantierName</li>
+			}
+			</ul>
+		</fieldset>
+	</div>
+</div>

@@ -18,6 +18,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ISessionsHandler, SessionsHandler>();
+builder.Services.AddScoped<IDateValidation, DateValidation>();
+builder.Services.AddScoped<IExcelFileHandler, ExcelFileHandler>();
 // compare it with addSingleton
 
 var app = builder.Build();

@@ -1,0 +1,51 @@
+﻿@model Consommation
+@{
+	ViewData["Title"] = "Ajouter une consommation";
+	var consommationTypes = ViewData["consommationTypes"] as IEnumerable<ConsommationType>;
+	var machine = ViewData["machine"] as Machine;
+
+}
+<div class="card">
+	<div class="card-header">
+		Ajouter consommation
+	</div>
+	<div class="card-body">
+		<form asp-controller="Consommation" asp-action="Create" method="post">
+			@Html.AntiForgeryToken()
+			<div class="row">
+				<input asp-for="MachineId" value="@machine.MachineId" hidden />
+				<input asp-for="OperateurId" value="@machine.OperateurId" hidden />	
+				<div class="col">
+					<label class="form-label">La machine : </label>
+					<input asp-for="Machine.Designation" class="form-control" value="@machine.Designation" disabled />
+				</div>
+				<div class="col">
+					<label class="form-label">L'opérateur :</label>
+					<input asp-for="Operateur.OperateurName" class="form-control" value="@machine.Operateur.OperateurName" disabled />
+				</div>
+			</div>
+			<label class="form-label">Type :</label>
+			<select asp-for="ConsommationTypeId" class="form-select">
+				<option>Type de consommation</option>
+				@foreach (var consommationType in consommationTypes)
+				{
+					<option value="@consommationType.ConsommationTypeId">@consommationType.Type</option>
+				}
+			</select>
+			<div class="row">
+				<div class="col">
+					<label class="form-label">Montant en Dh :</label>
+					<input asp-for="MontantEnDh" class="form-control" />
+				</div>
+				<div class="col">
+					<label class="form-label">Jour & Heure :</label>
+					<input asp-for="Date" class="form-control" />
+				</div>
+			</div>
+			<div class="mt-2">
+				<input type="submit" class="btn btn-primary" value="Ajouter" />
+				<input asp-controller="Consommation" asp-action="Index" type="submit" class="btn btn-secondary" value="Annuler"/>
+			</div>
+		</form>
+	</div>
+</div>

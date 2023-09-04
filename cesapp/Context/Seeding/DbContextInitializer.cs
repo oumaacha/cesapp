@@ -1,5 +1,7 @@
 ﻿using cesapp.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Xml.Linq;
 
 namespace cesapp.Context.Seeding
 {
@@ -148,28 +150,56 @@ namespace cesapp.Context.Seeding
                     Y = 45
                 }
                 );
+            _modelBuilder.Entity<Client>().HasData(
+                new Client()
+                {
+                    ClientId = 1,
+                    ClientName = "Client A"
+                }
+                );
+            _modelBuilder.Entity<Responsable>().HasData(
+                new Responsable()
+                {
+                    ResponsableId = 1,
+                    ResponsableFName = "Najib",
+                    ResponsableLName = "Elgoumi"
+                }
+                );
+            _modelBuilder.Entity<Dossier>().HasData(
+                new Dossier()
+                {
+                    DossierId = 1,
+                    DossierNum = "1455-1457-2486-3479",
+                    DateOuv = DateTime.UtcNow.AddDays(2),
+					Objet = "Objet Object Objet",
+					ResponsableId = 1,
+					ClientId = 1
+				}
+                );
 			_modelBuilder.Entity<Chantier>().HasData(
 				new Chantier()
 				{
 					ChantierId = 1,
 					Budget = 40000,
-					ChantierName = "XP Boskoura AR472",
+					ChantierName = "Chantier AR472",
 					DateDebut = DateTime.UtcNow,
 					DateFin = DateTime.UtcNow.AddDays(10),
 					Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
 					LocalisationId = 1,
-					Progres = 55
+					Progres = 55,
+                    DossierId = 1
 				},
 				new Chantier()
 				{
 					ChantierId = 2,
 					Budget = 60000,
-					ChantierName = "XP Boskoura AR472",
+					ChantierName = "Chantier XOP98",
 					DateDebut = DateTime.UtcNow,
 					DateFin = DateTime.UtcNow.AddDays(20),
 					Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
 					LocalisationId = 1,
-					Progres = 0
+					Progres = 0,
+					DossierId = 1
 				}
 				);
 			_modelBuilder.Entity<Machine>().HasData(
@@ -192,6 +222,16 @@ namespace cesapp.Context.Seeding
                     FournisseurId = 2,
                     MachineTypeId = 1,
                     OperateurId = 2
+                },
+                new Machine()
+                {
+                    MachineId = 3,
+                    Designation = "Machine C",
+                    Nfacteur = "45789",
+                    DateAcquisition = DateTime.UtcNow.AddDays(-20),
+                    FournisseurId = 1,
+                    MachineTypeId = 1,
+                    OperateurId = 1
                 }
                 );
             _modelBuilder.Entity<ChefLieu>().HasData(
@@ -334,6 +374,23 @@ namespace cesapp.Context.Seeding
                     PrefectureId = 13,
                     PrefectureName = "Taza", /**/
                     ChefLieuId = 3
+                }
+                );
+            _modelBuilder.Entity<ConsommationType>().HasData(
+                new ConsommationType()
+                {
+                    ConsommationTypeId = 1,
+                    Type = "Carburant"
+                },
+                new ConsommationType()
+                {
+                    ConsommationTypeId = 2,
+                    Type = "Vidange"
+                },
+                new ConsommationType()
+                {
+                    ConsommationTypeId = 3,
+                    Type = "Achat d'accessoire"
                 }
                 );
         }

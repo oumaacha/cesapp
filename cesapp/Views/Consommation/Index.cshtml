@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Consommation>
+
+@{
+	ViewData["Title"] = "Consommations";
+}
+
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="text-muted">Les charges</h5>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Machine</th>
+                    <th scope="col">Operateur</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Date et heure</th>
+                    <th scope="col">Montant</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var consommation in Model)
+                {
+                    <tr>
+                        <td>@consommation.Machine.Designation</td>
+                        <td>@consommation.Operateur.OperateurName</td>
+                        <td>@consommation.consommationType.Type</td>
+                        <td>@consommation.Date</td>
+                        <td>@consommation.MontantEnDh Dh</td>
+                        <td>
+                            <a asp-controller="Consommation" asp-action="Delete" asp-route-id="@consommation.ConsommationId" class="btn btn-sm btn-danger">Plus</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>    
+    </div>
+</div>
+

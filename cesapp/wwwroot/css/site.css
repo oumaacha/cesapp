@@ -37,3 +37,11 @@ body {
 .a-hover-effect:hover{
     color: yellow;
 }
+#paginator .page-item{
+    margin : 0 3px;
+    padding : 0 4px;
+    border : 1px solid grey;
+}
+#paginator .page-item a{
+    text-decoration: none;
+}

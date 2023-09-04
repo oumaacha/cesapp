@@ -3,7 +3,10 @@
 	ViewData["Title"] = "Chantier";
 }
 <div class="p-2">
-		<a asp-controller="Chantier" asp-action="AffecterMachine" asp-route-id="@Model.ChantierId" class="btn btn-sm btn-outline-dark">Affecter une machine</a>
+		<div class="d-flex justify-content-between">
+			<a asp-controller="Chantier" asp-action="AffecterMachine" asp-route-id="@Model.ChantierId" class="btn btn-sm btn-outline-dark">Affecter une machine</a>
+			<span class="text-muted">Dossier : @Model.Dossier.DossierNum</a>
+		</div>
 		<div class="row gap-2">
 			<fieldset class="card-fieldset col-sm">
 				<legend class="legend-title bg-warning">Chantier</legend>
@@ -46,13 +49,21 @@
 			<fieldset class="card-fieldset col-sm">
 				<legend class="legend-title bg-warning">Les machines</legend>
 				<div>
-					@foreach(var machine in Model.Machines)
+				@if (Model.Machines.Count > 0){
+					foreach(var machine in Model.Machines)
 					{
 						<div class="badge bg-dark m-1">
 							@machine.Designation
 						</div>
 					}
-				</div>
+				}
+				else
+				{
+					<div class="alert alert-danger" role="alert">
+						Aucune machine n'est trouvée.
+					</div>
+				}
+			</div>
 			</fieldset>
 		</div>
 </div>

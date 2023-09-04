@@ -17,6 +17,9 @@ namespace cesapp.Models
         public int Progres { get; set; } = 0;
         [Required]
         public int LocalisationId { get; set; }
+
+        public int DossierId { get; set; }
+        public Dossier Dossier { get; set; }
         public Localisation Localisation { get; set; }
         public ICollection<Machine> Machines { get; set; }
     }

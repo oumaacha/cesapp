@@ -1,0 +1,152 @@
+﻿@model Machine
+@{
+	ViewData["Title"] = "Machine";
+}
+<div class="p-1">
+	<div class="row gap-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Machine</legend>
+			<h6>@Model.Designation</h6>
+		</fieldset>
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Type</legend>
+			<h6>@Model.MachineType.MachineTypeName</h6>
+		</fieldset>
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Disponibilité</legend>
+			@if (Model.isAvailable)
+			{
+				<h6>Disponible</h6>
+			}else{
+				<h6>En fonctionnement sur le chantier @Model.Chantier.ChantierName</h6>
+			}
+		</fieldset>
+	</div>
+	<div class="row gap-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Date d'acquisition</legend>
+			<h6>@Model.DateAcquisition.Date.ToString("dd-MMM-yyyy")</h6>
+		</fieldset>
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Numéro de facture</legend>
+			<h6>@Model.Nfacteur</h6>
+		</fieldset>
+	</div>
+	<div class="row gap-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Fournisseur</legend>
+			<h6>@Model.Fournisseur.FournisseurName</h6>
+		</fieldset>
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Opérateur </legend>
+			<h6>@Model.Operateur.OperateurName</h6>
+		</fieldset>
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Situation</legend>
+			@if (Model.situation == 1)
+			{
+				<h6>Bonne</h6>
+			}
+			else
+			{
+				<h6>Défectueuse</h6>
+			}
+		</fieldset>
+	</div>
+	<div class="row gap-1 flex-grow-1">
+		<fieldset class="card-fieldset col-sm">
+			<legend class="legend-title bg-warning">Les charges</legend>
+			<div class="row">
+				<div class="col w-auto">
+					<canvas class="m-0 m-auto" height="300" width="600" id="myChart1"></canvas>
+				</div>
+				<div class="col">
+					<canvas class="m-0 m-auto"  id="myChart2"></canvas>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+	const chargesByTypeData = [];
+	const keysByTypeData = [];
+	const barsData = []
+	document.addEventListener("DOMContentLoaded",()=>{
+		fetch("/Consommation/MachineConsommationDataById/1")
+			.then(response => response.json())
+			.then(data =>{
+				for(const key in data){
+					chargesByTypeData.push(data[key])
+					keysByTypeData.push(key)
+				}
+				showTheChart(chargesByTypeData, keysByTypeData)
+			})
+			.catch(err => console.log(err))
+
+		fetch("/Consommation/MachineConsommationDataByIdBars/1")
+			.then(response => response.json())
+			.then(data => {
+				for (const key in data) {
+					let keys = key.split("_")
+					let month = keys[0]
+					let charge = keys[1]
+					if()
+					barsData.push({
+						label : "hahaha",
+						data : 
+					})
+				}
+			})
+			.catch(err => console.log(err))
+	})
+
+	const ctx1 = document.getElementById('myChart1');
+	const ctx2 = document.getElementById('myChart2');
+	const months = ["JAN", "FÉV", "MAR", "AVR", "MAI", "JUN", "JUL", "AOÛ", "SEP", "OCT", "NOV", "DÉC"];
+	
+	
+
+	new Chart(ctx1, {
+		type: 'bar',
+		data: {
+			labels: months,
+			datasets: [
+				/*{
+					label: '# of Votes',
+					data: data,
+					borderWidth: 1
+				},
+				{
+					label: '# of Votes',
+					data: [42, 19, 4, 5, 9, 3],
+					borderWidth: 1
+				}*/
+			]
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+	});
+	function showTheChart(data,key){
+		console.log(data)
+		new Chart(ctx2, {
+			type: 'doughnut',
+			data: {
+				labels: key,
+				datasets: [
+					{
+						label: 'en Dh',
+						data: data
+					}
+				]
+			}
+		});
+	}
+</script>

@@ -26,7 +26,9 @@ namespace cesapp.Controllers
         public IActionResult Create()
         {
             var cheflieux = _context.ChefLieux;
+            var dossiers = _context.Dossiers.Where(d => d.Chantiers.Count<=0);
             ViewData["cheflieux"] = cheflieux;
+            ViewData["dossiers"] = dossiers;
             return View();
         }
         [HttpPost]
@@ -42,7 +44,7 @@ namespace cesapp.Controllers
                 };
                 _context.Localisations.Add(localisation);
                 _context.SaveChanges();
-
+                
                 Chantier newChantier = new Chantier()
                 {
                     Budget = chantier.Budget,
@@ -51,7 +53,8 @@ namespace cesapp.Controllers
                     DateDebut = chantier.DateDebut,
                     DateFin = chantier.DateFin,
                     Description = chantier.Description,
-                    LocalisationId = localisation.LocalisationId
+                    LocalisationId = localisation.LocalisationId,
+                    DossierId = chantier.DossierId
                 };
                 _context.Chantiers.Add(newChantier);
                 _context.SaveChanges();
@@ -67,7 +70,11 @@ namespace cesapp.Controllers
         [Route("/Chantier/Chantier/{id}")]
         public IActionResult Chantier(int id)
         {
-            var chantier = _context.Chantiers.Include(x => x.Localisation.Prefecture).Include(x => x.Machines).FirstOrDefault(x => x.ChantierId == id);
+            var chantier = _context.Chantiers
+                .Include(x => x.Localisation.Prefecture)
+                .Include(x => x.Machines)
+				.Include(x => x.Dossier)
+				.FirstOrDefault(x => x.ChantierId == id);
             return View(chantier);
         }
         public IActionResult AffecterMachine(int id)

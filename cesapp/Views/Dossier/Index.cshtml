@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Dossier>
+@{
+	ViewData["Title"] = "Les dossiers";
+}
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="text-muted">Les dossiers</h5>
+            <div class="d-flex align-items-center gap-2">
+                <a asp-controller="Dossier" asp-action="Create" class="btn btn-primary">Ajouter un Dossier</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Numéro de dossier</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Responsable</th>
+                    <th scope="col">Chantiers</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dossier in Model)
+                {
+                    <tr>
+                        <td>@dossier.DossierNum</td>
+                        <td>@dossier.Client.ClientName</td>
+                        <td>@dossier.Responsable.ResponsableLName @dossier.Responsable.ResponsableFName</td>
+                        <td>
+                            @if (dossier.Chantiers.Count > 0)
+                            {
+                                <span class="badge bg-success">@dossier.Chantiers.Count</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">@dossier.Chantiers.Count</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Dossier" asp-action="Delete" asp-route-id="@dossier.DossierId" class="btn btn-sm btn-danger">Supprimer</a>
+                            <a asp-controller="Dossier" asp-action="DossierById" asp-route-id="@dossier.DossierId" class="btn btn-sm btn-warning">Plus</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

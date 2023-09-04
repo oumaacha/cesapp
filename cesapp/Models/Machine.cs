@@ -14,6 +14,7 @@ namespace cesapp.Models
         public DateTime DateAcquisition { get; set;}
         [Required]
         public bool isAvailable { get; set; } = true;
+        public int situation { get; set; } = 1;
         public int FournisseurId { get; set; }
         public int MachineTypeId { get; set; }
         public int OperateurId { get; set; }

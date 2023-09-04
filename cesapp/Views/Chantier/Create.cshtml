@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Ajouter un chantier";
     var cheflieux = ViewData["cheflieux"] as IEnumerable<ChefLieu>;
+    var dossiers = ViewData["dossiers"] as IEnumerable<Dossier>;
 }
 <div class="card">
     <div class="card-header">
@@ -10,10 +11,21 @@
     <div class="card-body">
         <form method="post" asp-controller="Chantier" asp-action="Create">
             @Html.AntiForgeryToken()
-            <div class="mb-3">
-                <label class="form-label">Nom du chantier</label>
-                <span class="text-danger small" asp-validation-for="ChantierName"></span>
-                <input asp-for="ChantierName" class="form-control">
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Dossier</label>
+                    <div class="input-group">
+                        <span class="text-danger small" asp-validation-for="DossierId"></span>
+                        <span class="input-group-text" id="isDossierValid"></span>
+                        <input class="form-control" id="numdossier"/>
+                        <input class="form-control" id="iddossier" asp-for="DossierId" hidden/>
+                    </div>
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Nom du chantier</label>
+                    <span class="text-danger small" asp-validation-for="ChantierName"></span>
+                    <input asp-for="ChantierName" class="form-control">
+                </div>
             </div>
             <div class="row">
                 <div class="mb-3 col">
@@ -49,7 +61,7 @@
                 <div class="col mb-3">
                     <label class="form-label">Chef-lieu</label>
                     <span class="text-danger small" asp-validation-for="Localisation.Prefecture.ChefLieu.LieuName"></span>
-                    <select asp-for="Localisation.Prefecture.ChefLieu.LieuName" id="selectedlieu">
+                    <select class="form-select" asp-for="Localisation.Prefecture.ChefLieu.LieuName" id="selectedlieu">
                         <option selected>Choisir le lieu</option>
                         @foreach (var cheflieu in cheflieux)
                         {
@@ -60,7 +72,7 @@
                 <div class="col mb-3">
                     <label class="form-label">Prefecture</label>
                     <span class="text-danger small" asp-validation-for="Localisation.Prefecture.PrefectureName"></span><br />
-                    <select asp-for="Localisation.Prefecture.PrefectureName" id="selectedperfecture">
+                    <select class="form-select" asp-for="Localisation.Prefecture.PrefectureName" id="selectedperfecture">
                         <option>Choisir une prefecture</option>
                     </select>
                 </div>
@@ -111,4 +123,26 @@
             })
             .catch(error => console.error("Error fetching data:", error));
     }
+
+    const numdossier = document.getElementById("numdossier")
+    const isDossierValid = document.getElementById("isDossierValid")
+    const iddossier = document.getElementById("iddossier")
+    numdossier.addEventListener("input",()=>{
+        let DossierUrl = "/Dossier/GetDossierNum/"
+        DossierUrl+=numdossier.value
+        fetch(DossierUrl)
+        .then(response => response.json())
+        .then(data=>{
+            if(data > 0){
+                    isDossierValid.style.backgroundColor = "green"
+                    isDossierValid.style.color = "white"
+                }else{
+                isDossierValid.style.backgroundColor = "red"
+                    isDossierValid.style.color = "white"
+
+            }
+                iddossier.value = data
+        })
+        .catch(err=>console.log(err))
+    })
 </script>
