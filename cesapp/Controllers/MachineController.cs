@@ -83,6 +83,11 @@ namespace cesapp.Controllers
 
                 _context.Machines.Add(newMachine);
                 _context.SaveChanges();
+
+                var operateur = _context.Operateurs.Find(newMachine.OperateurId);
+                operateur.isAvailable = false;
+                _context.SaveChanges();
+
             }
             return RedirectToAction("Index", "Machine");
         }

@@ -101,7 +101,11 @@ namespace cesapp.Migrations
                     ResponsableId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ResponsableFName = table.Column<string>(type: "text", nullable: false),
-                    ResponsableLName = table.Column<string>(type: "text", nullable: false)
+                    ResponsableLName = table.Column<string>(type: "text", nullable: false),
+                    Matricule = table.Column<string>(type: "text", nullable: false),
+                    CodeTelephone = table.Column<string>(type: "text", nullable: true),
+                    NumeroTelephone = table.Column<string>(type: "text", nullable: true),
+                    Mail = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -346,6 +350,44 @@ namespace cesapp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Rondements",
+                columns: table => new
+                {
+                    RondmentId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SC_En_Metre = table.Column<decimal>(type: "numeric", nullable: false),
+                    SD_En_Metre = table.Column<decimal>(type: "numeric", nullable: false),
+                    EssaiPressiometrique = table.Column<int>(type: "integer", nullable: false),
+                    SPT = table.Column<int>(type: "integer", nullable: false),
+                    CPT_En_MetreLineaire = table.Column<decimal>(type: "numeric", nullable: false),
+                    MachineId = table.Column<int>(type: "integer", nullable: false),
+                    ChantierId = table.Column<int>(type: "integer", nullable: true),
+                    OperateurId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rondements", x => x.RondmentId);
+                    table.ForeignKey(
+                        name: "FK_Rondements_Chantiers_ChantierId",
+                        column: x => x.ChantierId,
+                        principalTable: "Chantiers",
+                        principalColumn: "ChantierId");
+                    table.ForeignKey(
+                        name: "FK_Rondements_Machines_MachineId",
+                        column: x => x.MachineId,
+                        principalTable: "Machines",
+                        principalColumn: "MachineId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Rondements_Operateurs_OperateurId",
+                        column: x => x.OperateurId,
+                        principalTable: "Operateurs",
+                        principalColumn: "OperateurId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "ChefLieux",
                 columns: new[] { "LieuId", "LieuName" },
@@ -412,8 +454,8 @@ namespace cesapp.Migrations
 
             migrationBuilder.InsertData(
                 table: "Responsables",
-                columns: new[] { "ResponsableId", "ResponsableFName", "ResponsableLName" },
-                values: new object[] { 1, "Najib", "Elgoumi" });
+                columns: new[] { "ResponsableId", "CodeTelephone", "Mail", "Matricule", "NumeroTelephone", "ResponsableFName", "ResponsableLName" },
+                values: new object[] { 1, "1457", "elgoumi@lpee.ma", "0451", "0614571579", "Najib", "Elgoumi" });
 
             migrationBuilder.InsertData(
                 table: "Roles",
@@ -427,16 +469,16 @@ namespace cesapp.Migrations
             migrationBuilder.InsertData(
                 table: "Dossiers",
                 columns: new[] { "DossierId", "ClientId", "DateOuv", "DossierNum", "Objet", "ResponsableId" },
-                values: new object[] { 1, 1, new DateTime(2023, 8, 23, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8131), "1455-1457-2486-3479", "Objet Object Objet", 1 });
+                values: new object[] { 1, 1, new DateTime(2023, 9, 16, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3059), "1455-1457-2486-3479", "Objet Object Objet", 1 });
 
             migrationBuilder.InsertData(
                 table: "Machines",
                 columns: new[] { "MachineId", "ChantierId", "DateAcquisition", "Designation", "FournisseurId", "MachineTypeId", "Nfacteur", "OperateurId", "isAvailable", "situation" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8229), "Machine A", 1, 1, "15484", 1, true, 1 },
-                    { 2, null, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8232), "Machine B", 2, 1, "15484", 2, true, 1 },
-                    { 3, null, new DateTime(2023, 8, 1, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8234), "Machine C", 1, 1, "45789", 1, true, 1 }
+                    { 1, null, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3107), "Machine A", 1, 1, "15484", 1, true, 1 },
+                    { 2, null, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3109), "Machine B", 2, 1, "15484", 2, true, 1 },
+                    { 3, null, new DateTime(2023, 8, 25, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3111), "Machine C", 1, 1, "45789", 1, true, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -464,8 +506,8 @@ namespace cesapp.Migrations
                 columns: new[] { "UserId", "Created", "Email", "FirstName", "IsEmailConfirmed", "LastConnection", "LastName", "PasswordHash", "RoleId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7282), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
-                    { 2, new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7292), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
+                    { 1, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(2815), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
+                    { 2, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(2820), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -490,8 +532,8 @@ namespace cesapp.Migrations
                 columns: new[] { "ChantierId", "Budget", "ChantierName", "DateDebut", "DateFin", "Description", "DossierId", "LocalisationId", "Progres" },
                 values: new object[,]
                 {
-                    { 1, 40000.0, "Chantier AR472", new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181), new DateTime(2023, 8, 31, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 55 },
-                    { 2, 60000.0, "Chantier XOP98", new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186), new DateTime(2023, 9, 10, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 0 }
+                    { 1, 40000.0, "Chantier AR472", new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3083), new DateTime(2023, 9, 24, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3085), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 55 },
+                    { 2, 60000.0, "Chantier XOP98", new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3089), new DateTime(2023, 10, 4, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3089), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 0 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -565,6 +607,24 @@ namespace cesapp.Migrations
                 column: "ChefLieuId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rondements_ChantierId",
+                table: "Rondements",
+                column: "ChantierId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rondements_MachineId",
+                table: "Rondements",
+                column: "MachineId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rondements_OperateurId",
+                table: "Rondements",
+                column: "OperateurId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
@@ -580,6 +640,9 @@ namespace cesapp.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Consommations");
+
+            migrationBuilder.DropTable(
+                name: "Rondements");
 
             migrationBuilder.DropTable(
                 name: "Users");

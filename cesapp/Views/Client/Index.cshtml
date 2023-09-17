@@ -1,0 +1,52 @@
+﻿@model IPagedList<Client>
+@{
+    ViewData["Title"] = "Clients";
+}
+
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="text-muted">Les Clients</h5>
+            <div class="d-flex align-items-center gap-2">
+                <a asp-controller="Client" asp-action="Create" class="btn btn-primary">Ajouter un client</a>
+                <a class="btn btn-success">Télécharger un fichier</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var client in Model)
+                {
+                    <tr>
+                        <td>@client.ClientName</td>
+                        <td>
+                            <a asp-controller="Client" asp-action="Delete" asp-route-id="@client.ClientId" class="btn btn-sm btn-danger">Supprimer</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="paginator">
+            @Html.PagedListPager(
+            Model,
+            page => Url.Action("Index", new { page }),
+            new X.PagedList.Web.Common.PagedListRenderOptions
+            {
+            Display = X.PagedList.Web.Common.PagedListDisplayMode.IfNeeded,
+            LiElementClasses = new[] { "page-item" }
+            }
+            )
+        </div>
+    </div>
+</div>
+

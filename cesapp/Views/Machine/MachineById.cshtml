@@ -53,99 +53,309 @@
 			}
 		</fieldset>
 	</div>
-	<div class="row gap-1 flex-grow-1">
+	<div class="row gap-1">
 		<fieldset class="card-fieldset col-sm">
-			<legend class="legend-title bg-warning">Les charges</legend>
-			<div class="row">
-				<div class="col w-auto">
-					<canvas class="m-0 m-auto" height="300" width="600" id="myChart1"></canvas>
-				</div>
-				<div class="col">
-					<canvas class="m-0 m-auto"  id="myChart2"></canvas>
-				</div>
+			<legend class="legend-title bg-warning">Opérateur </legend>
+			<div>
+				<button type="button" id="consommationBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#consommationModal">
+					Consommation
+				</button>
+				<button type="button"  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rondementModal">
+					Rondement
+				</button>
 			</div>
 		</fieldset>
+	</div>
+
+</div>
+
+<div class="modal fade p-2" id="consommationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-5">
+				<div class="row gap-1 flex-grow-1">
+					<div class="d-flex justify-content-between align-items-center">
+						<div class="w-75">
+							<canvas class="w-auto" id="barChart"></canvas>
+						</div>
+
+						<div >
+							<canvas class="w-auto" id="doughnutChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade p-2" id="rondementModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="w-25">
+					<select id="yearSelect" class="form-select form-select-sm" aria-label=".form-select-sm example">
+						<!--Options will be added using js-->
+					</select>
+				</div>
+				<div class="row gap-1 flex-grow-1">
+					<div class="d-flex justify-content-center align-items-center">
+						<div class="w-75">
+							<canvas class="w-auto" id="barChartRondement"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+			
+		</div>
 	</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-	const chargesByTypeData = [];
-	const keysByTypeData = [];
-	const barsData = []
-	document.addEventListener("DOMContentLoaded",()=>{
-		fetch("/Consommation/MachineConsommationDataById/1")
+	var yearSelect = document.getElementById('yearSelect')
+	
+	async function yearsList() {
+			let maxYear = 0;
+		try {
+			const response = await fetch('/Rondement/GetRondementYears');
+			const data = await response.json();
+
+			data.sort();
+			data.reverse();
+			maxYear = data[0];
+
+			for (const year of data) {
+				const option = document.createElement('option');
+				option.value = year;
+				option.text = year;
+				yearSelect.appendChild(option);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+		return maxYear
+	}
+
+	yearSelect.addEventListener('change',(e)=>{
+		loadRondementData(e.target.value)
+	})
+
+	var barsData = []
+	let monthsInFrench = [
+		'Janvier',
+		'Février',
+		'Mars',
+		'Avril',
+		'Mai',
+		'Juin',
+		'Juillet',
+		'Août',
+		'Septembre',
+		'Octobre',
+		'Novembre',
+		'Décembre'
+	];
+	const groupedData = []
+
+	function loadRondementData(year){
+		fetch("/Rondement/MachineRondementDataByIdBars/" + @Model.MachineId+"?year="+year)
 			.then(response => response.json())
-			.then(data =>{
-				for(const key in data){
+			.then(data => {
+				console.log(data)
+				let datasets = []
+				let Rondementdata = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				for (let d in data) {
+					Rondementdata[d - 1] = data[d]
+				}
+				console.log(Rondementdata)
+				datasets.push({
+					label: "SC + SD",
+					data: Rondementdata,
+					backgroundColor: [
+						'rgba(75, 192, 192, 0.2)',
+					],
+					borderColor: [
+						'rgb(75, 192, 192)',
+					],
+					borderWidth: 1
+				})
+				showRondementBarChart(datasets, monthsInFrench)
+			})
+			.catch(err => console.log(err))
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		let maxYear = yearsList().then(year => {
+			loadRondementData(year)
+		})
+	})
+
+</script>
+<script>
+	var myModal = document.getElementById('consommationModal')
+	var consommationBtn = document.getElementById('consommationBtn')
+	/********************************************************** */
+	myModal.addEventListener('shown.bs.modal', function () {
+		
+	})
+	document.addEventListener("DOMContentLoaded", () => {
+		retrieveConsommationData()
+	})
+	/********************************************************** */
+	const chargesByTypeData = [];
+	monthsInFrench = [
+		'Janvier',
+		'Février',
+		'Mars',
+		'Avril',
+		'Mai',
+		'Juin',
+		'Juillet',
+		'Août',
+		'Septembre',
+		'Octobre',
+		'Novembre',
+		'Décembre'
+	];
+	let groupedConsommationData = []
+	let keysByTypeData = [];
+	function retrieveConsommationData(){
+		fetch("/Consommation/MachineConsommationDataById/"+@Model.MachineId)
+			.then(response => response.json())
+			.then(data => {
+				for (const key in data) {
 					chargesByTypeData.push(data[key])
 					keysByTypeData.push(key)
 				}
-				showTheChart(chargesByTypeData, keysByTypeData)
+				showDoughnutChart(chargesByTypeData, keysByTypeData)
 			})
 			.catch(err => console.log(err))
-
-		fetch("/Consommation/MachineConsommationDataByIdBars/1")
+		fetch("/Consommation/MachineConsommationDataByIdBars/" + @Model.MachineId)
 			.then(response => response.json())
 			.then(data => {
 				for (const key in data) {
 					let keys = key.split("_")
 					let month = keys[0]
 					let charge = keys[1]
-					if()
-					barsData.push({
-						label : "hahaha",
-						data : 
+					let value = data[key]
+
+					if (!groupedConsommationData[charge]) {
+						groupedConsommationData[charge] = [];
+					}
+
+					groupedConsommationData[charge].push({ month, value });
+				}
+				let datasets = []
+				let chargesdata = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				for (let d in groupedConsommationData) {
+					chargesdata = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+					for (let dd of groupedConsommationData[d]) {
+						chargesdata[dd.month - 1] = dd.value
+					}
+					datasets.push({
+						label: d,
+						data: chargesdata,
+						borderWidth: 1
 					})
 				}
+				console.log(datasets)
+				showBarChart(datasets, monthsInFrench)
 			})
 			.catch(err => console.log(err))
-	})
+	}
 
-	const ctx1 = document.getElementById('myChart1');
-	const ctx2 = document.getElementById('myChart2');
-	const months = ["JAN", "FÉV", "MAR", "AVR", "MAI", "JUN", "JUL", "AOÛ", "SEP", "OCT", "NOV", "DÉC"];
-	
-	
-
-	new Chart(ctx1, {
-		type: 'bar',
-		data: {
-			labels: months,
-			datasets: [
-				/*{
-					label: '# of Votes',
-					data: data,
-					borderWidth: 1
-				},
-				{
-					label: '# of Votes',
-					data: [42, 19, 4, 5, 9, 3],
-					borderWidth: 1
-				}*/
-			]
-		},
-		options: {
-			scales: {
-				y: {
-					beginAtZero: true
+	let rondementchart = null
+	function showRondementBarChart(datasets,keys){
+		const ctx = document.getElementById('barChartRondement').getContext("2d");
+		if (rondementchart) {
+			rondementchart.destroy()
+		}
+		rondementchart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: keys,
+				datasets: datasets
+			},
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
+					}
 				}
 			}
+		});
+		
+	}
+	let consommationBarChart = null
+	function showBarChart(datasets,keys) {
+		const ctx1 = document.getElementById('barChart');
+		if (consommationBarChart){
+			consommationBarChart.destroy()
 		}
-	});
-	function showTheChart(data,key){
-		console.log(data)
-		new Chart(ctx2, {
-			type: 'doughnut',
+		consommationBarChart = new Chart(ctx1, {
+			type: 'bar',
 			data: {
-				labels: key,
-				datasets: [
-					{
-						label: 'en Dh',
-						data: data
+				labels: keys,
+				datasets: datasets
+			},
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
 					}
-				]
+				}
+			}
+		});
+	}
+	let consommationDoughnutChart = null
+	function showDoughnutChart(data, keys) {
+		const ctx = document.getElementById('doughnutChart');
+		if (consommationDoughnutChart){
+			consommationDoughnutChart.destroy()
+		}
+		consommationDoughnutChart = new Chart(ctx, {
+			type: 'pie',
+			data: {
+				labels: keys,
+				datasets: [{
+					label: 'Consommation en DH',
+					data: data,
+					borderWidth: 1
+				}]
+			},
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				},
+				plugins: {
+					datalabels: {
+						formatter: function (value, context) {
+							return value; // Display the data value as the label
+						},
+						color: 'red', // Label text color
+						font: {
+							size: 14, // Label font size
+							weight: 'bold' // Label font weight
+						}
+					}
+				}
 			}
 		});
 	}

@@ -4,7 +4,7 @@ namespace cesapp.Controllers
 {
 	public class DashboardController : Controller
 	{
-		public IActionResult Index()
+		public IActionResult ConsommationDashboard()
 		{
 			return View();
 		}

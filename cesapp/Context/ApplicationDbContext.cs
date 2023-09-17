@@ -90,8 +90,19 @@ namespace cesapp.Context
 				.HasMany(x => x.Chantiers)
 				.WithOne(x => x.Dossier)
 				.HasForeignKey(x => x.DossierId);
-
-			new DbContextInitializer(modelBuilder).Seed();
+			modelBuilder.Entity<Rondement>()
+				.HasOne(x => x.Chantier)
+				.WithOne()
+				.HasForeignKey<Rondement>(x => x.ChantierId);
+            modelBuilder.Entity<Rondement>()
+				.HasOne(x => x.Machine)
+				.WithOne()
+				.HasForeignKey<Rondement>(x => x.MachineId);
+            modelBuilder.Entity<Rondement>()
+                .HasOne(x => x.Operateur)
+                .WithOne()
+                .HasForeignKey<Rondement>(x => x.OperateurId);
+            new DbContextInitializer(modelBuilder).Seed();
 		}
 
 		public DbSet<User> Users { get; set; }
@@ -110,5 +121,6 @@ namespace cesapp.Context
 		public DbSet<Dossier> Dossiers { get; set; }
 		public DbSet<Responsable> Responsables { get; set; }
 		public DbSet<Client> Clients { get; set; }
+		public DbSet<Rondement> Rondements { get; set; }
 	}
 }

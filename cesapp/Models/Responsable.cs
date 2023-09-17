@@ -10,6 +10,11 @@ namespace cesapp.Models
 		public string ResponsableFName { get; set; }
 		[Required]
 		public string ResponsableLName { get; set; }
-		public ICollection<Dossier> Dossiers { get; set; }
+		[Required]
+		public string Matricule { get; set; }
+		public string CodeTelephone { get; set; }
+        public string NumeroTelephone { get; set; }
+		public string Mail { get; set; }
+        public ICollection<Dossier> Dossiers { get; set; }
 	}
 }

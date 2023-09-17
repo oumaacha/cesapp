@@ -12,7 +12,7 @@ using cesapp.Context;
 namespace cesapp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230821112228_mig1")]
+    [Migration("20230914230335_mig1")]
     partial class mig1
     {
         /// <inheritdoc />
@@ -72,8 +72,8 @@ namespace cesapp.Migrations
                             ChantierId = 1,
                             Budget = 40000.0,
                             ChantierName = "Chantier AR472",
-                            DateDebut = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181),
-                            DateFin = new DateTime(2023, 8, 31, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8181),
+                            DateDebut = new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3083),
+                            DateFin = new DateTime(2023, 9, 24, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3085),
                             Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
                             DossierId = 1,
                             LocalisationId = 1,
@@ -84,8 +84,8 @@ namespace cesapp.Migrations
                             ChantierId = 2,
                             Budget = 60000.0,
                             ChantierName = "Chantier XOP98",
-                            DateDebut = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186),
-                            DateFin = new DateTime(2023, 9, 10, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8186),
+                            DateDebut = new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3089),
+                            DateFin = new DateTime(2023, 10, 4, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3089),
                             Description = "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.",
                             DossierId = 1,
                             LocalisationId = 1,
@@ -305,7 +305,7 @@ namespace cesapp.Migrations
                         {
                             DossierId = 1,
                             ClientId = 1,
-                            DateOuv = new DateTime(2023, 8, 23, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8131),
+                            DateOuv = new DateTime(2023, 9, 16, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3059),
                             DossierNum = "1455-1457-2486-3479",
                             Objet = "Objet Object Objet",
                             ResponsableId = 1
@@ -428,7 +428,7 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 1,
-                            DateAcquisition = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8229),
+                            DateAcquisition = new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3107),
                             Designation = "Machine A",
                             FournisseurId = 1,
                             MachineTypeId = 1,
@@ -440,7 +440,7 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 2,
-                            DateAcquisition = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8232),
+                            DateAcquisition = new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3109),
                             Designation = "Machine B",
                             FournisseurId = 2,
                             MachineTypeId = 1,
@@ -452,7 +452,7 @@ namespace cesapp.Migrations
                         new
                         {
                             MachineId = 3,
-                            DateAcquisition = new DateTime(2023, 8, 1, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(8234),
+                            DateAcquisition = new DateTime(2023, 8, 25, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3111),
                             Designation = "Machine C",
                             FournisseurId = 1,
                             MachineTypeId = 1,
@@ -659,6 +659,19 @@ namespace cesapp.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ResponsableId"));
 
+                    b.Property<string>("CodeTelephone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Mail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Matricule")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NumeroTelephone")
+                        .HasColumnType("text");
+
                     b.Property<string>("ResponsableFName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -675,6 +688,10 @@ namespace cesapp.Migrations
                         new
                         {
                             ResponsableId = 1,
+                            CodeTelephone = "1457",
+                            Mail = "elgoumi@lpee.ma",
+                            Matricule = "0451",
+                            NumeroTelephone = "0614571579",
                             ResponsableFName = "Najib",
                             ResponsableLName = "Elgoumi"
                         });
@@ -706,6 +723,55 @@ namespace cesapp.Migrations
                             RoleId = 2,
                             RoleName = "Simple"
                         });
+                });
+
+            modelBuilder.Entity("cesapp.Models.Rondement", b =>
+                {
+                    b.Property<int>("RondmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RondmentId"));
+
+                    b.Property<decimal>("CPT_En_MetreLineaire")
+                        .HasColumnType("numeric");
+
+                    b.Property<int?>("ChantierId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EssaiPressiometrique")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MachineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OperateurId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("SC_En_Metre")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("SD_En_Metre")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("SPT")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RondmentId");
+
+                    b.HasIndex("ChantierId")
+                        .IsUnique();
+
+                    b.HasIndex("MachineId")
+                        .IsUnique();
+
+                    b.HasIndex("OperateurId")
+                        .IsUnique();
+
+                    b.ToTable("Rondements");
                 });
 
             modelBuilder.Entity("cesapp.Models.User", b =>
@@ -757,7 +823,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 1,
-                            Created = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7282),
+                            Created = new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(2815),
                             Email = "oumaachaanouar@gmail.com",
                             FirstName = "Anouar",
                             IsEmailConfirmed = false,
@@ -768,7 +834,7 @@ namespace cesapp.Migrations
                         new
                         {
                             UserId = 2,
-                            Created = new DateTime(2023, 8, 21, 11, 22, 28, 133, DateTimeKind.Utc).AddTicks(7292),
+                            Created = new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(2820),
                             Email = "naimkawtar@gmail.com",
                             FirstName = "Kawtar",
                             IsEmailConfirmed = false,
@@ -960,6 +1026,31 @@ namespace cesapp.Migrations
                         .IsRequired();
 
                     b.Navigation("ChefLieu");
+                });
+
+            modelBuilder.Entity("cesapp.Models.Rondement", b =>
+                {
+                    b.HasOne("cesapp.Models.Chantier", "Chantier")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Rondement", "ChantierId");
+
+                    b.HasOne("cesapp.Models.Machine", "Machine")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Rondement", "MachineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cesapp.Models.Operateur", "Operateur")
+                        .WithOne()
+                        .HasForeignKey("cesapp.Models.Rondement", "OperateurId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chantier");
+
+                    b.Navigation("Machine");
+
+                    b.Navigation("Operateur");
                 });
 
             modelBuilder.Entity("cesapp.Models.User", b =>

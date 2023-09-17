@@ -29,11 +29,6 @@ namespace cesapp.Controllers
         }*/
         public IActionResult Index(int? page)
         {
-            int pageNumber = page ?? 1;
-            int pageSize = 3;
-
-            /*var consommationsPages = _context.Consommations
-                .ToPagedList(pageNumber, pageSize);*/
 
             IEnumerable<Consommation> consommations = _context.Consommations
                 .Include(c => c.Machine)
@@ -89,11 +84,33 @@ namespace cesapp.Controllers
                 ); 
             return data;
         }
-
+		public IDictionary<string, decimal> MachinesConsommationData()
+		{
+			var data = _context.Consommations
+				.GroupBy(c => c.consommationType.Type)
+				.ToDictionary(
+					group => group.Key,
+					group => group.Sum(c => c.MontantEnDh)
+				);
+			return data;
+		}
+		
 		public IDictionary<string, decimal> MachineConsommationDataByIdBars(int id)
 		{
 			var data = _context.Consommations
 				.Where(c => c.MachineId == id)
+				.GroupBy(c => new { Month = c.Date.Month, Type = c.consommationType.Type })
+				.ToDictionary(
+					group => $"{group.Key.Month}_{group.Key.Type}",
+					group => group.Sum(c => c.MontantEnDh)
+				);
+
+			return data;
+		}
+
+		public IDictionary<string, decimal> MachinesConsommationDataBars()
+		{
+			var data = _context.Consommations
 				.GroupBy(c => new { Month = c.Date.Month, Type = c.consommationType.Type })
 				.ToDictionary(
 					group => $"{group.Key.Month}_{group.Key.Type}",

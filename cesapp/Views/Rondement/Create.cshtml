@@ -1,0 +1,66 @@
+﻿@model Rondement
+@{
+	ViewData["Title"] = "Ajouter une consommation";
+	var machine = ViewData["machine"] as Machine;
+}
+<div class="card">
+	<div class="card-header">
+		Ajouter rondement
+	</div>
+	<div class="card-body">
+		<form asp-controller="Rondement" asp-action="Create" method="post">
+			@Html.AntiForgeryToken()
+			<div class="row">
+				<input asp-for="MachineId" value="@machine.MachineId" hidden />
+				<input asp-for="OperateurId" value="@machine.OperateurId" hidden />
+				<input asp-for="ChantierId" value="@machine.ChantierId" hidden />
+				<div class="col">
+					<label class="form-label">La date : </label>
+					<input asp-for="Machine.Designation" class="form-control" value="@machine.Designation" disabled />
+				</div>
+				<div class="col">
+					<label class="form-label">L'opérateur :</label>
+					<input asp-for="Operateur.OperateurName" class="form-control" value="@machine.Operateur.OperateurName" disabled />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<span asp-validation-for="Date"></span>
+					<label class="form-label">La date : </label>
+					<input type="date" asp-for="Date" class="form-control" />
+				</div>
+				<div class="col">
+					<span asp-validation-for="SC_En_Metre"></span>
+					<label class="form-label">SC (m) :</label>
+					<input asp-for="SC_En_Metre" class="form-control" />
+				</div>
+				<div class="col">
+					<span asp-validation-for="SD_En_Metre"></span>
+					<label class="form-label">SD (m) :</label>
+					<input asp-for="SD_En_Metre" class="form-control" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<span asp-validation-for="EssaiPressiometrique"></span>
+					<label class="form-label">Essai pressiométrique :</label>
+					<input asp-for="EssaiPressiometrique" class="form-control" />
+				</div>
+				<div class="col">
+					<span asp-validation-for="SPT"></span>
+					<label class="form-label">SPT :</label>
+					<input asp-for="SPT" class="form-control" />
+				</div>
+				<div class="col">
+					<span asp-validation-for="CPT_En_MetreLineaire"></span>
+					<label class="form-label">CPT (mètre linéaire) :</label>
+					<input asp-for="CPT_En_MetreLineaire" class="form-control" />
+				</div>
+			</div>
+			<div class="mt-2">
+				<input type="submit" class="btn btn-primary" value="Ajouter" />
+				<input asp-controller="Rondement" asp-action="Index" type="submit" class="btn btn-secondary" value="Annuler" />
+			</div>
+		</form>
+	</div>
+</div>

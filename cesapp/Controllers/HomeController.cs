@@ -18,7 +18,7 @@ namespace cesapp.Controllers
         {
             if (_sessionsHandler.getUserSession("connectedUser") != null)
             {
-                return View();
+                return RedirectToAction("ConsommationDashboard", "Dashboard");
             }
             return RedirectToAction("Login","Account"); 
         }

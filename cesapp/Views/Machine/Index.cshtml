@@ -53,7 +53,8 @@
                         <td>
                             <a asp-controller="Machine" asp-action="Delete" asp-route-id="@machine.MachineId" class="btn btn-sm btn-danger">Supprimer</a>
                             <a asp-controller="Machine" asp-action="MachineById" asp-route-id="@machine.MachineId" class="btn btn-sm btn-warning">Plus</a>
-                            <a asp-controller="Consommation" asp-action="Create" asp-route-id="@machine.MachineId" class="btn btn-sm btn-info">Ajouter Consommation</a>
+                            <a asp-controller="Consommation" asp-action="Create" asp-route-id="@machine.MachineId" class="btn btn-sm btn-info">Consommation</a>
+                            <a asp-controller="Rondement" asp-action="Create" asp-route-id="@machine.MachineId" class="btn btn-sm btn-success">Rondement</a>
                         </td>
                     </tr>
                 }

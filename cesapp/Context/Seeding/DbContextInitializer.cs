@@ -162,7 +162,11 @@ namespace cesapp.Context.Seeding
                 {
                     ResponsableId = 1,
                     ResponsableFName = "Najib",
-                    ResponsableLName = "Elgoumi"
+                    ResponsableLName = "Elgoumi",
+                    CodeTelephone = "1457",
+                    Mail = "elgoumi@lpee.ma",
+                    Matricule = "0451",
+                    NumeroTelephone = "0614571579"
                 }
                 );
             _modelBuilder.Entity<Dossier>().HasData(

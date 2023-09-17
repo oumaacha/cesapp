@@ -1,0 +1,62 @@
+﻿@model IPagedList<Rondement>
+
+@{
+    ViewData["Title"] = "Rondements";
+}
+
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="text-muted">Les charges</h5>
+        </div>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Machine</th>
+                    <!--<th scope="col">Operateur</th>-->
+                    <th scope="col">Date</th>
+                    <th scope="col">SC (m)</th>
+                    <th scope="col">SD (m)</th>
+                    <th scope="col">SPT</th>
+                    <th scope="col">Essai pressiométrique</th>
+                    <th scope="col">CPT (mètre linéaire)</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rondement in Model)
+                {
+                    <tr>
+                        <td>@rondement.MachineId</td>
+                        <td>@rondement.Date</td>
+                        <td>@rondement.SC_En_Metre</td>
+                        <td>@rondement.SD_En_Metre</td>
+                        <td>@rondement.SPT</td>
+                        <td>@rondement.EssaiPressiometrique</td>
+                        <td>@rondement.CPT_En_MetreLineaire</td>
+                        <td>
+                            <a asp-controller="Rondement" asp-action="Delete" asp-route-id="@rondement.RondmentId" class="btn btn-sm btn-danger">Plus</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="paginator">
+            @Html.PagedListPager(
+            Model,
+            page => Url.Action("Index", new { page }),
+            new X.PagedList.Web.Common.PagedListRenderOptions
+            {
+            Display = X.PagedList.Web.Common.PagedListDisplayMode.IfNeeded,
+            LiElementClasses = new[] { "page-item" }
+            }
+            )
+        </div>
+    </div>
+</div>
+
