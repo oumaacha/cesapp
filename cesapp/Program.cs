@@ -1,4 +1,5 @@
 using cesapp.Context;
+using cesapp.Models;
 using cesapp.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,8 +61,13 @@ app.Use(async (context, next) =>
     var requestPath = context.Request.Path;
     if (user != null && user.RoleId == 2)
     {
-        if (requestPath.StartsWithSegments(new PathString("/User")) || requestPath.StartsWithSegments(new PathString("/Produit")))
-        {
+        // simple user is not allowed to access User , Responsable and Client pages and related operations
+        if (requestPath.StartsWithSegments(new PathString("/User")) 
+            || requestPath.StartsWithSegments(new PathString("/Responsable"))
+			|| requestPath.StartsWithSegments(new PathString("/Client"))
+			|| requestPath.StartsWithSegments(new PathString("/Dossier"))) 
+
+		{
             context.Response.Redirect("/Error/AccessDenied");
             return;
         }

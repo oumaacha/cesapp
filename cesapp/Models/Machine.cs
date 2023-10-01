@@ -7,9 +7,10 @@ namespace cesapp.Models
         [Key]
         public int MachineId { get; set; }
         [Required]
+        [MaxLength(200)]
         public string Designation { get; set; }
         [Required]
-        public string Nfacteur { get; set; }
+        public string Nfacture { get; set; }
         [Required]
         public DateTime DateAcquisition { get; set;}
         [Required]
@@ -17,7 +18,7 @@ namespace cesapp.Models
         public int situation { get; set; } = 1;
         public int FournisseurId { get; set; }
         public int MachineTypeId { get; set; }
-        public int OperateurId { get; set; }
+        public int? OperateurId { get; set; }
         public int? ChantierId { get; set; }
         public Operateur Operateur { get; set; }
         public Fournisseur Fournisseur { get; set; }

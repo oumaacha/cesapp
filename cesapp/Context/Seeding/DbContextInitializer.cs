@@ -154,7 +154,8 @@ namespace cesapp.Context.Seeding
                 new Client()
                 {
                     ClientId = 1,
-                    ClientName = "Client A"
+                    ClientName = "Client A",
+                    ClientAddress = "Client A address"
                 }
                 );
             _modelBuilder.Entity<Responsable>().HasData(
@@ -211,7 +212,7 @@ namespace cesapp.Context.Seeding
                 {
                     MachineId = 1,
                     Designation = "Machine A",
-                    Nfacteur = "15484",
+                    Nfacture = "15484",
                     DateAcquisition = DateTime.UtcNow,
                     FournisseurId = 1,
                     MachineTypeId = 1,
@@ -221,7 +222,7 @@ namespace cesapp.Context.Seeding
                 {
                     MachineId = 2,
                     Designation = "Machine B",
-                    Nfacteur = "15484",
+                    Nfacture = "15484",
                     DateAcquisition = DateTime.UtcNow,
                     FournisseurId = 2,
                     MachineTypeId = 1,
@@ -231,7 +232,7 @@ namespace cesapp.Context.Seeding
                 {
                     MachineId = 3,
                     Designation = "Machine C",
-                    Nfacteur = "45789",
+                    Nfacture = "45789",
                     DateAcquisition = DateTime.UtcNow.AddDays(-20),
                     FournisseurId = 1,
                     MachineTypeId = 1,

@@ -1,6 +1,7 @@
 ﻿@model IPagedList<Operateur>
 @{
-	ViewData["Title"] = "Opérateurs";
+    ViewData["Title"] = "Opérateurs";
+    var userRole = (int) ViewData["userRole"];
 }
 
 @using X.PagedList.Mvc.Core
@@ -11,8 +12,11 @@
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="text-muted">Les Opérateurs</h5>
             <div class="d-flex align-items-center gap-2">
-                <a asp-controller="Operateur" asp-action="Create" class="btn btn-primary">Ajouter un opérateur</a>
-                <a class="btn btn-success">Télécharger un fichier</a>
+                @if (userRole == 1)
+                {
+                    <a asp-controller="Operateur" asp-action="Create" class="btn btn-primary">Ajouter un opérateur</a>
+                    <a class="btn btn-success">Télécharger un fichier</a>
+                }
             </div>
         </div>
     </div>
@@ -23,7 +27,10 @@
                     <th scope="col">Nom</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Disponibilité</th>
-                    <th scope="col">Action</th>
+                    @if(userRole == 1)
+                    {
+                        <th scope="col">Action</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -40,9 +47,17 @@
                         {
                             <td>Indisponible</td>
                         }
-                        <td>
-                            <a asp-controller="Operateur" asp-action="Delete" asp-route-id="@operateur.OperateurId" class="btn btn-sm btn-danger">Supprimer</a>
-                        </td>
+                        @if(userRole == 1)
+                        {
+                            <td>
+                                <a asp-controller="Operateur" asp-action="Delete" asp-route-id="@operateur.OperateurId" class="btn btn-sm btn-danger">Supprimer</a>
+                                <a asp-controller="Operateur" asp-action="Edit" asp-route-id="@operateur.OperateurId" class="btn btn-sm btn-secondary">Modifier</a>
+                                @if (!operateur.isAvailable)
+                                {
+                                    <a asp-controller="Operateur" asp-action="Liberer" asp-route-id="@operateur.OperateurId" class="btn btn-sm btn-success">Libérer</a>
+                                }
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>

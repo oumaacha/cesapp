@@ -4,8 +4,6 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace cesapp.Migrations
 {
     /// <inheritdoc />
@@ -33,7 +31,8 @@ namespace cesapp.Migrations
                 {
                     ClientId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ClientName = table.Column<string>(type: "text", nullable: false)
+                    ClientName = table.Column<string>(type: "text", nullable: false),
+                    ClientAddress = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -279,14 +278,14 @@ namespace cesapp.Migrations
                 {
                     MachineId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Designation = table.Column<string>(type: "text", nullable: false),
-                    Nfacteur = table.Column<string>(type: "text", nullable: false),
+                    Designation = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Nfacture = table.Column<string>(type: "text", nullable: false),
                     DateAcquisition = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     isAvailable = table.Column<bool>(type: "boolean", nullable: false),
                     situation = table.Column<int>(type: "integer", nullable: false),
                     FournisseurId = table.Column<int>(type: "integer", nullable: false),
                     MachineTypeId = table.Column<int>(type: "integer", nullable: false),
-                    OperateurId = table.Column<int>(type: "integer", nullable: false),
+                    OperateurId = table.Column<int>(type: "integer", nullable: true),
                     ChantierId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -386,154 +385,6 @@ namespace cesapp.Migrations
                         principalTable: "Operateurs",
                         principalColumn: "OperateurId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "ChefLieux",
-                columns: new[] { "LieuId", "LieuName" },
-                values: new object[,]
-                {
-                    { 1, "Tanger-Assilah" },
-                    { 2, "Oujda-Angad" },
-                    { 3, "Fès" },
-                    { 4, "Rabat" },
-                    { 5, "Beni Mellal" },
-                    { 6, "Casablanca" },
-                    { 7, "Marrakech" },
-                    { 8, "Errachidia" },
-                    { 9, "Agadir Ida-Outanane" },
-                    { 10, "Guelmim" },
-                    { 11, "Laâyoune" },
-                    { 12, "Dakhla-Oued-Eddahab" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Clients",
-                columns: new[] { "ClientId", "ClientName" },
-                values: new object[] { 1, "Client A" });
-
-            migrationBuilder.InsertData(
-                table: "ConsommationsType",
-                columns: new[] { "ConsommationTypeId", "Type" },
-                values: new object[,]
-                {
-                    { 1, "Carburant" },
-                    { 2, "Vidange" },
-                    { 3, "Achat d'accessoire" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Fournisseurs",
-                columns: new[] { "FournisseurId", "FournisseurName" },
-                values: new object[,]
-                {
-                    { 1, "EMCI" },
-                    { 2, "TEC SYSTME" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "MachineTypes",
-                columns: new[] { "MachineTypeId", "MachineTypeName" },
-                values: new object[,]
-                {
-                    { 1, "Sondeuse" },
-                    { 2, "Inclinomètre" },
-                    { 3, "Contrôleur Pression Volume (CPV)" },
-                    { 4, "Enregistreur de paramètres de forage" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Operateurs",
-                columns: new[] { "OperateurId", "OperateurName", "OperateurPhone", "isAvailable" },
-                values: new object[,]
-                {
-                    { 1, "Operateur A", "0613354716", true },
-                    { 2, "Operateur B", "0613354716", true },
-                    { 3, "Operateur C", "0613354716", true }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Responsables",
-                columns: new[] { "ResponsableId", "CodeTelephone", "Mail", "Matricule", "NumeroTelephone", "ResponsableFName", "ResponsableLName" },
-                values: new object[] { 1, "1457", "elgoumi@lpee.ma", "0451", "0614571579", "Najib", "Elgoumi" });
-
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "RoleId", "RoleName" },
-                values: new object[,]
-                {
-                    { 1, "Admin" },
-                    { 2, "Simple" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Dossiers",
-                columns: new[] { "DossierId", "ClientId", "DateOuv", "DossierNum", "Objet", "ResponsableId" },
-                values: new object[] { 1, 1, new DateTime(2023, 9, 16, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3059), "1455-1457-2486-3479", "Objet Object Objet", 1 });
-
-            migrationBuilder.InsertData(
-                table: "Machines",
-                columns: new[] { "MachineId", "ChantierId", "DateAcquisition", "Designation", "FournisseurId", "MachineTypeId", "Nfacteur", "OperateurId", "isAvailable", "situation" },
-                values: new object[,]
-                {
-                    { 1, null, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3107), "Machine A", 1, 1, "15484", 1, true, 1 },
-                    { 2, null, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3109), "Machine B", 2, 1, "15484", 2, true, 1 },
-                    { 3, null, new DateTime(2023, 8, 25, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3111), "Machine C", 1, 1, "45789", 1, true, 1 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Prefectures",
-                columns: new[] { "PrefectureId", "ChefLieuId", "PrefectureName" },
-                values: new object[,]
-                {
-                    { 1, 1, "Tanger-Assilah" },
-                    { 2, 1, "Tétouan" },
-                    { 3, 1, "Larache" },
-                    { 4, 1, "Chefchaouen" },
-                    { 5, 2, "Oujda-Angad" },
-                    { 6, 2, "Driouech" },
-                    { 7, 2, "Berkane" },
-                    { 8, 2, "Guercif" },
-                    { 9, 3, "Fès" },
-                    { 10, 3, "Hajeb" },
-                    { 11, 3, "Moulay Yacoub" },
-                    { 12, 3, "Boulemane" },
-                    { 13, 3, "Taza" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "UserId", "Created", "Email", "FirstName", "IsEmailConfirmed", "LastConnection", "LastName", "PasswordHash", "RoleId" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(2815), "oumaachaanouar@gmail.com", "Anouar", false, null, "Oumaacha", "0613395473", 1 },
-                    { 2, new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(2820), "naimkawtar@gmail.com", "Kawtar", false, null, "Naim", "0613395473", 2 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Workers",
-                columns: new[] { "WorkerId", "OperateurId", "PhoneNumber", "Type", "WorkerName" },
-                values: new object[,]
-                {
-                    { 1, 1, "0613395473", "OUVRIER", "Worker A" },
-                    { 2, 1, "0613395473", "OUVRIER", "Worker B" },
-                    { 4, 2, "0613395473", "OUVRIER", "Worker C" },
-                    { 5, 1, "0613395473", "AID_SONDEUR", "Worker D" },
-                    { 6, 2, "0613395473", "AID_SONDEUR", "Worker E" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Localisations",
-                columns: new[] { "LocalisationId", "PrefectureId", "X", "Y" },
-                values: new object[] { 1, 2, 24.0, 45.0 });
-
-            migrationBuilder.InsertData(
-                table: "Chantiers",
-                columns: new[] { "ChantierId", "Budget", "ChantierName", "DateDebut", "DateFin", "Description", "DossierId", "LocalisationId", "Progres" },
-                values: new object[,]
-                {
-                    { 1, 40000.0, "Chantier AR472", new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3083), new DateTime(2023, 9, 24, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3085), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 55 },
-                    { 2, 60000.0, "Chantier XOP98", new DateTime(2023, 9, 14, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3089), new DateTime(2023, 10, 4, 23, 3, 35, 517, DateTimeKind.Utc).AddTicks(3089), "The curious cat quickly jumped over the tall fence and explored the mysterious garden, chasing butterflies and enjoying the sunshine.", 1, 1, 0 }
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,5 +1,6 @@
 ﻿using cesapp.Context;
 using cesapp.Models;
+using cesapp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,13 +9,17 @@ namespace cesapp.Controllers
     public class ChantierController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public ChantierController(ApplicationDbContext context)
+        private readonly ISessionsHandler _sessionsHandler;
+        public ChantierController(ApplicationDbContext context, ISessionsHandler sessionsHandler)
         {
             _context = context;
+            _sessionsHandler = sessionsHandler;
         }
         public IActionResult Index()
         {
             IEnumerable<Chantier> chantiers = _context.Chantiers.Include(x => x.Localisation.Prefecture);
+            var user = _sessionsHandler.getUserSession("connectedUser");
+            ViewData["userRole"] = user.RoleId;
             return View(chantiers);
         }
         [Route("/Chantier/ChefLieur/{id}")]
@@ -25,15 +30,21 @@ namespace cesapp.Controllers
         }
         public IActionResult Create()
         {
-            var cheflieux = _context.ChefLieux;
-            var dossiers = _context.Dossiers.Where(d => d.Chantiers.Count<=0);
-            ViewData["cheflieux"] = cheflieux;
-            ViewData["dossiers"] = dossiers;
-            return View();
+            var user = _sessionsHandler.getUserSession("connectedUser");
+            if(user.RoleId == 1)
+            {
+                var cheflieux = _context.ChefLieux;
+                var dossiers = _context.Dossiers.Where(d => d.Chantiers.Count <= 0);
+                ViewData["cheflieux"] = cheflieux;
+                ViewData["dossiers"] = dossiers;
+                return View();
+            }
+            return Content("Accès refusée");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Chantier chantier) {
+
             if (ModelState.IsValid)
             {
                 Localisation localisation = new Localisation()
@@ -75,7 +86,9 @@ namespace cesapp.Controllers
                 .Include(x => x.Machines)
 				.Include(x => x.Dossier)
 				.FirstOrDefault(x => x.ChantierId == id);
-            return View(chantier);
+			var user = _sessionsHandler.getUserSession("connectedUser");
+			ViewData["userRole"] = user.RoleId;
+			return View(chantier);
         }
         public IActionResult AffecterMachine(int id)
         {
@@ -116,5 +129,36 @@ namespace cesapp.Controllers
             }
 			return Json(new { message = "error" });
 		}
-	}
+        public IActionResult Edit(int id)
+        {
+            var chantier = _context.Chantiers
+                .Include(c => c.Dossier)
+                .Include(c => c.Localisation.Prefecture.ChefLieu)
+                .FirstOrDefault(c => c.ChantierId == id);
+            IEnumerable<ChefLieu> cheflieux = _context.ChefLieux;
+            IEnumerable<Dossier> dossiers = _context.Dossiers;
+            ViewData["cheflieux"] = cheflieux;
+            ViewData["dossiers"] = dossiers;
+            return View(chantier);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Chantier chantier)
+        {
+            if (ModelState.IsValid)
+            {
+                var oldChantier = _context.Chantiers.FirstOrDefault(c => c.ChantierId == chantier.ChantierId);
+                if (oldChantier != null)
+                {
+                    oldChantier.Progres = chantier.Progres;
+                    oldChantier.Budget = chantier.Budget;
+                    oldChantier.DateDebut = chantier.DateDebut;
+                    oldChantier.DateFin = chantier.DateFin;
+                    oldChantier.Description = chantier.Description;
+                    _context.SaveChanges();
+                }
+            }
+            return RedirectToAction("Chantier", new { id = chantier.ChantierId });
+        }
+    }
 }

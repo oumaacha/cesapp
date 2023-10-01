@@ -1,6 +1,7 @@
 ﻿@model Machine
 @{
 	ViewData["Title"] = "Machine";
+	var operateurs = ViewData["operateurs"] as IEnumerable<Operateur>;
 }
 <div class="p-1">
 	<div class="row gap-1">
@@ -29,7 +30,7 @@
 		</fieldset>
 		<fieldset class="card-fieldset col-sm">
 			<legend class="legend-title bg-warning">Numéro de facture</legend>
-			<h6>@Model.Nfacteur</h6>
+			<h6>@Model.Nfacture</h6>
 		</fieldset>
 	</div>
 	<div class="row gap-1">
@@ -39,7 +40,14 @@
 		</fieldset>
 		<fieldset class="card-fieldset col-sm">
 			<legend class="legend-title bg-warning">Opérateur </legend>
-			<h6>@Model.Operateur.OperateurName</h6>
+			@if(Model.Operateur != null)
+			{
+				<h6>@Model.Operateur.OperateurName</h6>
+			}
+			else
+			{
+				<h6>Sans opérateur</h6>
+			}
 		</fieldset>
 		<fieldset class="card-fieldset col-sm">
 			<legend class="legend-title bg-warning">Situation</legend>
@@ -63,11 +71,55 @@
 				<button type="button"  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rondementModal">
 					Rondement
 				</button>
+				@if (Model.Operateur == null)
+				{
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#operateurModal">
+						Attribuez un opérateur
+					</button>
+				}
 			</div>
 		</fieldset>
 	</div>
 
 </div>
+@if (Model.Operateur == null)
+{
+	<div class="modal fade p-2" id="operateurModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body p-5">
+					<div class="row gap-1 flex-grow-1">
+						<form method="post" asp-controller="Machine" asp-action="AttribuerOperateur">
+							@Html.AntiForgeryToken()
+							<div class="mb-3">
+								<input name="MachineId" value="@Model.MachineId" class="form-control" hidden>
+								<label class="form-label">Opérateur</label>
+								<span class="text-danger small" asp-validation-for="OperateurId"></span>
+								<select class="form-select" name="OperateurId">
+									<option selected>Choisir l'opérateur</option>
+									@if (operateurs != null)
+									{
+										foreach (var operateur in operateurs)
+										{
+											<option value="@operateur.OperateurId">@operateur.OperateurName</option>
+										}
+									}
+								</select>
+							</div>
+							<button type="submit" class="btn btn-primary mt-3">Valider</button>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}
 
 <div class="modal fade p-2" id="consommationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-xl">

@@ -94,7 +94,7 @@ namespace cesapp.Services
 						newMachine.OperateurId = 1;
 						if(col == 4)
 						{
-							newMachine.Nfacteur = cellValue.ToString();
+							newMachine.Nfacture = cellValue.ToString();
 						}
 						if (col == 1)
 						{
@@ -104,7 +104,7 @@ namespace cesapp.Services
 						{
 							newMachine.DateAcquisition = DateTime.Parse(cellValue.ToString());
 						}
-						Console.WriteLine("facteur "+newMachine.Nfacteur);
+						Console.WriteLine("facteur "+newMachine.Nfacture);
 						Console.WriteLine("operateurid "+newMachine.OperateurId);
 						Console.WriteLine("machinetype "+newMachine.MachineId);
 						Console.WriteLine("date "+newMachine.DateAcquisition);

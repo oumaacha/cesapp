@@ -102,7 +102,7 @@ namespace cesapp.Context
                 .HasOne(x => x.Operateur)
                 .WithOne()
                 .HasForeignKey<Rondement>(x => x.OperateurId);
-            new DbContextInitializer(modelBuilder).Seed();
+            //new DbContextInitializer(modelBuilder).Seed();
 		}
 
 		public DbSet<User> Users { get; set; }

@@ -1,11 +1,19 @@
 ﻿@model Chantier
 @{
 	ViewData["Title"] = "Chantier";
+	var userRole = (int)ViewData["userRole"];
 }
 <div class="p-2">
 		<div class="d-flex justify-content-between">
+		@if(userRole == 1)
+		{
 			<a asp-controller="Chantier" asp-action="AffecterMachine" asp-route-id="@Model.ChantierId" class="btn btn-sm btn-outline-dark">Affecter une machine</a>
-			<span class="text-muted">Dossier : @Model.Dossier.DossierNum</a>
+		}
+		else
+		{
+			<a asp-controller="Chantier" asp-action="AffecterMachine" asp-route-id="@Model.ChantierId" class="btn btn-sm btn-outline-dark disabled">Affecter une machine</a>
+		}
+		<span class="text-muted">Dossier : @Model.Dossier.DossierNum</a>
 		</div>
 		<div class="row gap-2">
 			<fieldset class="card-fieldset col-sm">

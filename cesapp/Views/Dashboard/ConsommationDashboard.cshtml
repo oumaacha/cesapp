@@ -5,9 +5,14 @@
 <div class="container">
 	<div>
 		<a asp-action="ConsommationDashboard" asp-controller="Dashboard" class="btn btn-sm btn-warning">Consommation</a>
-		<a asp-action="RondementDashboard" asp-controller="Dashboard" class="btn btn-sm btn-success">Rodement</a>
+		<a asp-action="RondementDashboard" asp-controller="Dashboard" class="btn btn-sm btn-success">Production</a>
 	</div>
 	<div class="row">
+		<div class="mt-2 w-25">
+			<select id="yearSelect" class="form-select form-select-sm" aria-label=".form-select-sm example">
+				<!--Options will be added using js-->
+			</select>
+		</div>
 		<div class="d-flex justify-content-between align-items-center">
 			<div class="w-75">
 				<canvas class="w-auto" id="barChart"></canvas>
@@ -23,9 +28,36 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+	var yearSelect = document.getElementById('yearSelect')
+	let maxYear = 0
+	async function yearsList() {
+		try {
+			const response = await fetch('/Consommation/GetConsommationYears');
+			const data = await response.json();
+
+			data.sort();
+			data.reverse();
+			maxYear = data[0];
+			for (const year of data) {
+				const option = document.createElement('option');
+				option.value = year;
+				option.text = year;
+				yearSelect.appendChild(option);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	yearSelect.addEventListener('change', (e) => {
+		console.log(e.target.value)
+		retrieveConsommationData(e.target.value)
+	})
 
 	document.addEventListener("DOMContentLoaded", () => {
-		retrieveConsommationData()
+		yearsList()
+		console.log(maxYear)
+		retrieveConsommationData(maxYear)
 	})
 	/********************************************************** */
 	const chargesByTypeData = [];
@@ -45,14 +77,15 @@
 	];
 	let groupedConsommationData = []
 	let keysByTypeData = [];
-	function retrieveConsommationData() {
-		fetch("/Consommation/MachinesConsommationData")
+	function retrieveConsommationData(year) {
+		fetch("/Consommation/MachinesConsommationData?year="+year)
 			.then(response => response.json())
 			.then(data => {
 				for (const key in data) {
 					chargesByTypeData.push(data[key])
 					keysByTypeData.push(key)
 				}
+
 				showDoughnutChart(chargesByTypeData, keysByTypeData)
 			})
 			.catch(err => console.log(err))

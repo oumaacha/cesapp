@@ -1,0 +1,51 @@
+﻿@model Responsable
+@{
+    ViewData["Title"] = "Modifier un responsable";
+}
+<div class="card">
+    <div class="card-body">
+        <form method="post" asp-controller="Responsable" asp-action="Edit">
+            @Html.AntiForgeryToken()
+            <input asp-for="ResponsableId" value="@Model.ResponsableId" hidden>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Nom</label>
+                    <span class="text-danger small" asp-validation-for="ResponsableLName"></span>
+                    <input asp-for="ResponsableLName" value="@Model.ResponsableLName" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Prénom</label>
+                    <span class="text-danger small" asp-validation-for="ResponsableFName"></span>
+                    <input asp-for="ResponsableFName" value="@Model.ResponsableFName" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Matricule</label>
+                    <span class="text-danger small" asp-validation-for="Matricule"></span>
+                    <input asp-for="Matricule" value="@Model.Matricule" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Mail</label>
+                    <span class="text-danger small" asp-validation-for="Mail"></span>
+                    <input asp-for="Mail" value="@Model.Mail" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Code Téléphone</label>
+                    <span class="text-danger small" asp-validation-for="CodeTelephone"></span>
+                    <input asp-for="CodeTelephone" value="@Model.CodeTelephone" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Numéro de Téléphone</label>
+                    <span class="text-danger small" asp-validation-for="NumeroTelephone"></span>
+                    <input asp-for="NumeroTelephone" value="@Model.NumeroTelephone" class="form-control">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <a asp-controller="Operateur" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+    </div>
+</div>
+

@@ -8,5 +8,9 @@ namespace cesapp.Controllers
 		{
 			return View();
 		}
+		public IActionResult RondementDashboard()
+		{
+			return View();
+		}
 	}
 }

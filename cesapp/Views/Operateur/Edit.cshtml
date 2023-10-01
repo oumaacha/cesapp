@@ -1,0 +1,24 @@
+﻿@model Operateur
+@{
+    ViewData["Title"] = "Modifier un opérateur";
+}
+<div class="card">
+    <div class="card-body">
+        <form method="post" asp-controller="Operateur" asp-action="Edit">
+            @Html.AntiForgeryToken()
+            <input asp-for="OperateurId" value="@Model.OperateurId" hidden>
+            <div class="mb-3">
+                <label class="form-label">Nom et Prénom</label>
+                <span class="text-danger small" asp-validation-for="OperateurName"></span>
+                <input asp-for="OperateurName" value="@Model.OperateurName" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Numéro de téléphone</label>
+                <span class="text-danger small" asp-validation-for="OperateurPhone"></span>
+                <input type="text" asp-for="OperateurPhone" value="@Model.OperateurPhone" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <a asp-controller="Operateur" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+    </div>
+</div>

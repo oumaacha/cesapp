@@ -1,0 +1,72 @@
+﻿@model Machine
+@{
+    ViewData["Title"] = "Modifier machine";
+    var fournisseurs = ViewData["fournisseurs"] as IEnumerable<Fournisseur>;
+    var machinetypes = ViewData["machinetypes"] as IEnumerable<MachineType>;
+}
+<div class="card">
+    <div class="card-body">
+        <form method="post" asp-controller="Machine" asp-action="Edit">
+            @Html.AntiForgeryToken()
+            <input asp-for="MachineId" value="@Model.MachineId" class="form-control" hidden>
+            <div class="mb-3">
+                <label class="form-label">Désignation</label>
+                <span class="text-danger small" asp-validation-for="Designation"></span>
+                <input asp-for="Designation" value="@Model.Designation" class="form-control">
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Date d'acquisition</label>
+                    <span class="text-danger small" asp-validation-for="DateAcquisition"></span>
+                    <input type="Date" asp-for="DateAcquisition" value="@Model.DateAcquisition" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Numero de facture</label>
+                    <span class="text-danger small" asp-validation-for="Nfacture"></span>
+                    <input asp-for="Nfacture" value="@Model.Nfacture" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Situation</label>
+                    <span class="text-danger small" asp-validation-for="situation"></span>
+                    <select class="form-select" asp-for="situation">
+                        @if (Model.situation == 1)
+                        { 
+                            <option value="1" selected>Bonne</option>
+                            <option value="2">Défectueuse</option>
+                        }
+                        else
+                        {
+                            <option value="2" selected>Défectueuse</option>
+                            <option value="1">Bonne</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fournisseur</label>
+                <span class="text-danger small" asp-validation-for="Fournisseur.FournisseurName"></span>
+                <select class="form-select" asp-for="FournisseurId" id="fournisseur-select" name="selectedFournisseur">
+                    <option value="@Model.FournisseurId" selected>@Model.Fournisseur.FournisseurName</option>
+                    @foreach (var founisseur in fournisseurs)
+                    {
+                        <option value="@founisseur.FournisseurId">@founisseur.FournisseurName</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Type</label>
+                <span class="text-danger small" asp-validation-for="MachineType.MachineTypeName"></span>
+                <select class="form-select" asp-for="MachineTypeId" id="machinetype-select" name="selectedMachineType">
+                    <option value="@Model.MachineType.MachineTypeId" selected>@Model.MachineType.MachineTypeName</option>
+                    @foreach (var machinetype in machinetypes)
+                    {
+                        <option value="@machinetype.MachineTypeId">@machinetype.MachineTypeName</option>
+                    }
+                    <option value="autre">Autre</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <a asp-controller="Machine" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+    </div>
+</div>

@@ -56,5 +56,34 @@ namespace cesapp.Controllers
 			if (dossierid != null) return dossierid.DossierId;
             return 0;
 		}
-	}
+
+		public IActionResult Edit(int id)
+		{
+			var dossier = _context.Dossiers
+				.Include(d => d.Responsable)
+				.Include(d => d.Client)
+				.FirstOrDefault(d => d.DossierId == id);
+			var clients = _context.Clients;
+			var responsables = _context.Responsables;
+			ViewData["clients"] = clients;
+			ViewData["responsables"] = responsables;
+            return View(dossier);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+        public IActionResult Edit(Dossier dossier)
+        {
+			if (ModelState.IsValid)
+			{
+				var oldDossier = _context.Dossiers.FirstOrDefault(d => d.DossierId == dossier.DossierId);
+				oldDossier.ClientId = dossier.ClientId;
+				oldDossier.DateOuv = dossier.DateOuv;
+				oldDossier.Objet = dossier.Objet;
+				oldDossier.ResponsableId = dossier.ResponsableId;
+				_context.SaveChanges();
+			}
+			return RedirectToAction("DossierById", new { id = dossier.DossierId });
+        }
+    }
 }

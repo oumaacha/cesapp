@@ -21,16 +21,9 @@ namespace cesapp.Models
 
         [Required(ErrorMessage = "Ce champe est requis")]
         public string PasswordHash { get; set; }
-
-		public bool IsEmailConfirmed { get; set; } = false;
-		public DateTime Created { get; set; }
 		public DateTime? LastConnection { get; set; } = null;
         [Required(ErrorMessage = "Ce champe est requis")]
         public int RoleId { get; set; }
 		public Role Role { get; set; }
-        public User()
-        {
-            Created = DateTime.UtcNow;
-        }
     }
 }

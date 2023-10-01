@@ -40,10 +40,13 @@ namespace cesapp.Controllers
         public IActionResult Create(int id)
         {
             var machine = _context.Machines.Include(m => m.Operateur).FirstOrDefault(m => m.MachineId == id);
-            ViewData["consommationTypes"] = _context.ConsommationsType;
-            ViewData["operateurs"] = _context.Operateurs;
-            ViewData["machine"] = machine;
-			return View();
+            if(machine.Operateur != null) {
+                ViewData["consommationTypes"] = _context.ConsommationsType;
+                ViewData["operateurs"] = _context.Operateurs;
+                ViewData["machine"] = machine;
+                return View();
+            }
+            return Content("La machine n'a pas d'opérateur");
         }
 
         [HttpPost]
@@ -65,7 +68,7 @@ namespace cesapp.Controllers
                     ConsommationTypeId = consommation.ConsommationTypeId,
                     MachineId = Machine.MachineId,
                     MontantEnDh = consommation.MontantEnDh,
-                    OperateurId = Machine.OperateurId,
+                    OperateurId = (int) Machine.OperateurId,
                     Date = consommation.Date
                 };
                 _context.Consommations.Add(newCosommation);
@@ -86,7 +89,9 @@ namespace cesapp.Controllers
         }
 		public IDictionary<string, decimal> MachinesConsommationData()
 		{
+			int year = int.Parse(HttpContext.Request.Query["year"]);
 			var data = _context.Consommations
+                .Where(c => c.Date.Year == year)
 				.GroupBy(c => c.consommationType.Type)
 				.ToDictionary(
 					group => group.Key,
@@ -119,6 +124,13 @@ namespace cesapp.Controllers
 
 			return data;
 		}
-
+		
+	    public IEnumerable<int> GetConsommationYears()
+		{
+			IEnumerable<int> years = _context.Consommations
+				.Select(x => x.Date.Year)
+				.Distinct();
+			return years;
+		}
 	}
 }

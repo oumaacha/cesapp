@@ -14,6 +14,11 @@
                 <span class="text-danger small" asp-validation-for="ClientName"></span>
                 <input asp-for="ClientName" class="form-control">
             </div>
+            <div class="mb-3">
+                <label class="form-label">Adresse</label>
+                <span class="text-danger small" asp-validation-for="ClientAddress"></span>
+                <input asp-for="ClientAddress" class="form-control">
+            </div>
             <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
             <a asp-controller="Client" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
         </form>

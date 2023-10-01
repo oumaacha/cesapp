@@ -1,0 +1,94 @@
+﻿@model Chantier
+@{
+    ViewData["Title"] = "Modifier un chantier";
+    var cheflieux = ViewData["cheflieux"] as IEnumerable<ChefLieu>;
+    var dossiers = ViewData["dossiers"] as IEnumerable<Dossier>;
+}
+<div class="card">
+    <div class="card-body">
+        <form method="post" asp-controller="Chantier" asp-action="Edit">
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <input class="form-control" asp-for="ChantierId" value="@Model.ChantierId" hidden />
+                <div class="mb-3 col">
+                    <label class="form-label">Dossier</label>
+                    <div class="input-group">
+                        <span class="text-danger small" asp-validation-for="DossierId"></span>
+                        <span class="input-group-text" id="isDossierValid"></span>
+                        <input class="form-control" value="@Model.Dossier.DossierNum" id="numdossier" disabled/>
+                        <input class="form-control" id="iddossier" asp-for="DossierId" hidden />
+                    </div>
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Nom du chantier</label>
+                    <span class="text-danger small" asp-validation-for="ChantierName"></span>
+                    <input asp-for="ChantierName" value="@Model.ChantierName" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    <label class="form-label">Date de debut</label>
+                    <span class="text-danger small" asp-validation-for="DateDebut"></span>
+                    <input type="Date" asp-for="DateDebut" value="@Model.DateDebut" class="form-control">
+                </div>
+                <div class="mb-3 col">
+                    <label class="form-label">Date de fin</label>
+                    <span class="text-danger small" asp-validation-for="DateFin"></span>
+                    <input asp-for="DateFin" value="@Model.DateFin" class="form-control">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <span class="text-danger small" asp-validation-for="Description"></span>
+                <textarea asp-for="Description" class="form-control">@Model.Description</textarea>
+            </div>
+            <div class="row">
+                <div class="col mb-3">
+                    <label class="form-label">Budget</label>
+                    <span class="text-danger small" asp-validation-for="Budget"></span>
+                    <input asp-for="Budget" value="@Model.Budget" class="form-control">
+                </div>
+                <div class="col mb-3">
+                    <label class="form-label">Progres</label>
+                    <span class="text-danger small" asp-validation-for="Progres"></span>
+                    <span id="progesvalue" class="badge rounded-pill bg-warning text-black"></span>
+                    <input type="range" asp-for="Progres" min="0" max="100" value="@Model.Progres" step="1" class="form-range" id="progresrange">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            <a asp-controller="Chantier" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+        </form>
+    </div>
+</div>
+<script>
+    var rangevalue = document.getElementById("progresrange")
+    var progresvalue = document.getElementById("progesvalue")
+    window.addEventListener("load", () => {
+        progresvalue.innerHTML = 0 + "%"
+    })
+    rangevalue.addEventListener("mousemove", () => {
+        progresvalue.innerHTML = rangevalue.value + "%"
+    })
+
+    const numdossier = document.getElementById("numdossier")
+    const isDossierValid = document.getElementById("isDossierValid")
+    const iddossier = document.getElementById("iddossier")
+    numdossier.addEventListener("input", () => {
+        let DossierUrl = "/Dossier/GetDossierNum/"
+        DossierUrl += numdossier.value
+        fetch(DossierUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data > 0) {
+                    isDossierValid.style.backgroundColor = "green"
+                    isDossierValid.style.color = "white"
+                } else {
+                    isDossierValid.style.backgroundColor = "red"
+                    isDossierValid.style.color = "white"
+
+                }
+                iddossier.value = data
+            })
+            .catch(err => console.log(err))
+    })
+</script>

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Rondements";
+    var userRole = (int)ViewData["userRole"];
 }
 
 @using X.PagedList.Mvc.Core
@@ -40,7 +41,10 @@
                         <td>@rondement.EssaiPressiometrique</td>
                         <td>@rondement.CPT_En_MetreLineaire</td>
                         <td>
-                            <a asp-controller="Rondement" asp-action="Delete" asp-route-id="@rondement.RondmentId" class="btn btn-sm btn-danger">Plus</a>
+                            @if (userRole == 1)
+                            {
+                                <a asp-controller="Rondement" asp-action="Delete" asp-route-id="@rondement.RondmentId" class="btn btn-sm btn-danger">Supprimer</a>
+                            }
                         </td>
                     </tr>
                 }

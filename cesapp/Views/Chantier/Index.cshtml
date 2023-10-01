@@ -1,11 +1,19 @@
 ﻿@model IEnumerable<Chantier>
 @{
 	ViewData["Title"] = "Chantiers";
+    var userRole = (int)ViewData["userRole"];
 }
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="text-muted">Les machines</h5>
-        <a asp-controller="Chantier" asp-action="Create" class="btn btn-primary">Ajouter un chantier</a>
+        <h5 class="text-muted">Les chantiers</h5>
+        @if (userRole == 1)
+        {
+            <a asp-controller="Chantier" asp-action="Create" class="btn btn-primary">Ajouter un chantier</a>
+        }
+        else
+        {
+            <a asp-controller="Chantier" asp-action="Create" class="btn btn-primary disabled">Ajouter un chantier</a>
+        }
     </div>
     <div class="card-body">
         <table class="table">
@@ -31,7 +39,11 @@
                         <td>@chantier.Budget</td>
                         <td>@chantier.Progres</td>
                         <td>
-                            <a asp-controller="Chantier" asp-action="Delete" asp-route-id="@chantier.ChantierId" class="btn btn-sm btn-danger">Supprimer</a>
+                            @if (userRole == 1)
+                            {
+                                <a asp-controller="Chantier" asp-action="Delete" asp-route-id="@chantier.ChantierId" class="btn btn-sm btn-danger">Supprimer</a>
+                                <a asp-controller="Chantier" asp-action="Edit" asp-route-id="@chantier.ChantierId" class="btn btn-sm btn-warning">Modifier</a>
+                            }
                             <a asp-controller="Chantier" asp-action="Chantier" asp-route-id="@chantier.ChantierId" class="btn btn-sm btn-warning">Plus</a>
                         </td>
                     </tr>

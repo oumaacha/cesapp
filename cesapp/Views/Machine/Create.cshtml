@@ -25,8 +25,8 @@
                 </div>
                 <div class="mb-3 col">
                     <label class="form-label">Numero de facture</label>
-                    <span class="text-danger small" asp-validation-for="Nfacteur"></span>
-                    <input asp-for="Nfacteur" class="form-control">
+                    <span class="text-danger small" asp-validation-for="Nfacture"></span>
+                    <input asp-for="Nfacture" class="form-control">
                 </div>
             </div>
             <div class="mb-3">
@@ -56,7 +56,7 @@
                 <input asp-for="MachineType.MachineTypeName" class="form-control focud" id="machinetype-input">
             </div>
             <div class="mb-3">
-                <label class="form-label">(Operateur) Sondeur</label>
+                <label class="form-label">Opérateur</label>
                 <span class="text-danger small" asp-validation-for="Operateur"></span>
                 <select class="form-select" asp-for="Operateur.OperateurId" name="selectedOperateur">
                     <option selected>Choisir le sondeur</option>
@@ -67,7 +67,7 @@
                 </select>
             </div>
             <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
-            <a asp-controller="User" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
+            <a asp-controller="Machine" asp-action="Index" class="btn btn-secondary mt-3">Annuler</a>
         </form>
     </div>
 </div>

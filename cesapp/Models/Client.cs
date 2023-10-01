@@ -8,5 +8,7 @@ namespace cesapp.Models
 		public int ClientId { get; set; }
 		[Required]
 		public string ClientName { get; set; }
+		[Required]
+		public string ClientAddress { get; set; }
 	}
 }

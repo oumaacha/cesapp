@@ -1,0 +1,184 @@
+﻿
+@{
+	ViewData["Title"] = "Tableau de bord";
+}
+<div class="container">
+	<div>
+		<a asp-action="ConsommationDashboard" asp-controller="Dashboard" class="btn btn-sm btn-warning">Consommation</a>
+		<a asp-action="RondementDashboard" asp-controller="Dashboard" class="btn btn-sm btn-success">Rondement</a>
+	</div>
+	<div class="row">
+		<div>
+			<div class="mt-2 w-25">
+				<select id="yearSelect" class="form-select form-select-sm" aria-label=".form-select-sm example">
+					<!--Options will be added using js-->
+				</select>
+			</div>
+			<div class="row gap-1 flex-grow-1">
+				<div class="d-flex justify-content-center align-items-center">
+					<div class="w-75">
+						<canvas class="w-auto" id="barChartRondement"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+	var yearSelect = document.getElementById('yearSelect')
+
+	async function yearsList() {
+		let maxYear = 0;
+		try {
+			const response = await fetch('/Rondement/GetRondementYears');
+			const data = await response.json();
+
+			data.sort();
+			data.reverse();
+			maxYear = data[0];
+
+			for (const year of data) {
+				const option = document.createElement('option');
+				option.value = year;
+				option.text = year;
+				yearSelect.appendChild(option);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+		return maxYear
+	}
+
+	yearSelect.addEventListener('change', (e) => {
+		loadRondementData(e.target.value)
+	})
+
+	var barsData = []
+	let monthsInFrench = [
+		'Janvier',
+		'Février',
+		'Mars',
+		'Avril',
+		'Mai',
+		'Juin',
+		'Juillet',
+		'Août',
+		'Septembre',
+		'Octobre',
+		'Novembre',
+		'Décembre'
+	];
+	const groupedData = []
+
+	function loadRondementData(year) {
+		fetch("/Rondement/MachineRondementDataBars?year=" + year)
+			.then(response => response.json())
+			.then(data => {
+				let datasets = []
+				let TotalSCSD = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				let TotalSC = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				let TotalSD = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				let Essai = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				let SPT = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+				console.log(data)
+				for (const key in data) {
+					let keys = data[key].split("_")
+					
+					TotalSCSD[key[0]-1] = keys[0]
+					TotalSC[key[0]-1] = keys[1]
+					TotalSD[key[0]-1] = keys[2]
+					Essai[key[0]-1] = keys[3]
+					SPT[key[0]-1] = keys[4]
+				}
+				datasets.push({
+					label: "SC + SD",
+					data: TotalSCSD,
+					backgroundColor: [
+						'rgba(106, 90, 205, 0.2)',
+					],
+					borderColor: [
+						'rgb(106, 90, 205)',
+					],
+					borderWidth: 1
+				})
+				datasets.push({
+					label: "SC",
+					data: TotalSC,
+					backgroundColor: [
+						'rgba(255, 0, 0, 0.2)',
+					],
+					borderColor: [
+						'rgb(255, 0, 0)',
+					],
+					borderWidth: 1
+				})
+				datasets.push({
+					label: "SD",
+					data: TotalSD,
+					backgroundColor: [
+						'rgba(0, 0, 255, 0.2)',
+					],
+					borderColor: [
+						'rgb(0, 0, 255)',
+					],
+					borderWidth: 1
+				})
+				datasets.push({
+					label: "Essai",
+					data: Essai,
+					backgroundColor: [
+						'rgba(0, 255, 0, 0.2)',
+					],
+					borderColor: [
+						'rgb(0, 255, 0)',
+					],
+					borderWidth: 1
+				})
+				datasets.push({
+					label: "SPT",
+					data: SPT,
+					backgroundColor: [
+						'rgba(120, 150, 180, 0.2)',
+					],
+					borderColor: [
+						'rgb(120, 150, 180)',
+					],
+					borderWidth: 1
+				})
+				showRondementBarChart(datasets, monthsInFrench)
+			})
+			.catch(err => console.log(err))
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		let maxYear = yearsList().then(year => {
+			loadRondementData(year)
+		})
+	})
+
+	let rondementchart = null
+	function showRondementBarChart(datasets, keys) {
+		const ctx = document.getElementById('barChartRondement').getContext("2d");
+		if (rondementchart) {
+			rondementchart.destroy()
+		}
+		rondementchart = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: keys,
+				datasets: datasets
+			},
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				}
+			}
+		});
+
+	}
+</script>
